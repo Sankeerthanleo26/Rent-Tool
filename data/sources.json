@@ -1,20 +1,20 @@
 {
-  "status": "PLACEHOLDER DATA from earlier searches. Listing liveness, ages and distances are unverified. Replace with comps you confirm.",
+  "status": "INCOMPLETE: 2 readings of the subject listing, 1 platform estimate, 1 same-street comp, 3 weaker comps. No Zillow estimate, leased rents, or county data yet.",
   "accessed": "2026-11-11",
   "sources": [
-    {"id": "subject_listing", "name": "120 S Raleigh St asking (Zillow, Aug 2025)", "type": "listing_asking", "value": 2850, "age_days": 450,
-     "url": "https://www.zillow.com/homedetails/120-S-Raleigh-St-Denver-CO-80219/13340377_zpid", "note": "Listing removed 8/22/2025; stale"},
-    {"id": "zillow_est", "name": "Zillow Rent Zestimate", "type": "zillow_estimate", "value": 2572, "age_days": 0,
-     "url": "https://www.zillow.com/homedetails/120-S-Raleigh-St-Denver-CO-80219/13340377_zpid", "note": "Opaque automated estimate"},
-    {"id": "mariposa", "name": "1076 Mariposa St (Rentler)", "type": "asking_comp", "value": 2900, "beds": 3, "baths": 2, "sqft": 1701,
-     "url": "https://www.rentler.com/places-for-rent/co/denver/1076-mariposa-street/11560941", "note": "Age and distance unknown"},
-    {"id": "xavier", "name": "142 S Xavier St (RentGrace)", "type": "asking_comp", "value": 2525, "beds": 3, "baths": 1, "sqft": 950,
-     "url": "https://www.rentgrace.com/denver-homes-for-rent", "note": "Same neighborhood area; small house; age unknown"},
-    {"id": "hazel", "name": "2712 S Hazel Ct (Rentler)", "type": "asking_comp", "value": 2600, "beds": 3, "baths": 1, "sqft": 1700,
-     "url": "https://www.rentler.com/places-for-rent/co/denver/2712-s-hazel-ct/12702127", "note": "Cached page references 2024; likely stale"},
-    {"id": "gvr", "name": "18760 E 66th Pl (Rentler)", "type": "asking_comp", "value": 2800, "beds": 3, "baths": 2.5, "sqft": 1300,
-     "url": "https://rentler.com/places-for-rent/co/denver/18760-east-66th-pl/10956996", "note": "Green Valley Ranch, far from subject; liveness unconfirmed"},
-    {"id": "grove", "name": "2431 Grove St (Rentler)", "type": "asking_comp", "value": 3350, "beds": 3, "baths": 2, "sqft": 1600,
-     "url": "https://www.rentler.com/places-for-rent/co/denver/2431-grove-street/13034180", "note": "Highlands; pricier area; liveness unconfirmed"}
+    {"id": "hotpads_subject", "name": "4094 Malta St asking (HotPads, updated 9 hours ago)", "type": "listing_asking", "value": 2820, "age_days": 0,
+     "url": "https://hotpads.com/4094-malta-st-denver-co-80249-snpdyz/pad", "note": "Base rent; total with fees is 2,833. Managed by AMH."},
+    {"id": "forrent_subject", "name": "4094 Malta St asking (ForRent, updated 1 day ago)", "type": "listing_asking", "value": 2720, "age_days": 1,
+     "url": "https://www.forrent.com/co/denver/4094-malta-st/1hn7ed4", "note": "Same house, 100 lower than HotPads. Not independent of the HotPads reading; which is current is unknown."},
+    {"id": "hotpads_market", "name": "HotPads neighborhood market rate (implied)", "type": "zillow_estimate", "value": 2921, "age_days": 0,
+     "url": "https://hotpads.com/4094-malta-st-denver-co-80249-snpdyz/pad", "note": "Derived from the page saying the listing is 88 cheaper than market; unclear if measured against rent or total price."},
+    {"id": "malta_4124", "name": "4124 Malta St (ForRent, AMH, updated 1 day ago)", "type": "asking_comp", "value": 2810, "beds": 3, "baths": 2.5, "sqft": 1646, "age_days": 1, "distance_mi": 0.1,
+     "url": "https://www.forrent.com/co/denver/4124-malta-st/0hh6th1", "note": "Same size and layout, same street. Page says showings start soon. Distance is estimated from the street number."},
+    {"id": "gvr_66th", "name": "18760 E 66th Pl (Rentler, Real Property Mgmt)", "type": "asking_comp", "value": 2800, "beds": 3, "baths": 2.5, "sqft": 1300,
+     "url": "https://rentler.com/places-for-rent/co/denver/18760-east-66th-pl/10956996", "note": "Same area, smaller. Posted age and distance unknown; liveness unconfirmed."},
+    {"id": "malta_5546", "name": "5546 Malta St (Apartments.com, AMH)", "type": "asking_comp", "value": 2940, "beds": 4, "baths": 3.5, "sqft": 2032, "age_days": 0, "distance_mi": 1.0,
+     "url": "https://www.apartments.com/5546-malta-st-denver-co/sz7wbq5/", "note": "4 bed, larger. Page says check back for availability, so it may not be leasable. Off by default.", "include": false},
+    {"id": "malta_4371", "name": "4371 Malta St (Apartments.com)", "type": "asking_comp", "value": 2995, "beds": 4, "baths": 3, "sqft": 1868, "distance_mi": 0.4,
+     "url": "https://www.apartments.com/4371-malta-st-denver-co/3gsnvle/", "note": "4 bed. Total price (fees included), availability and date not stated. Off by default.", "include": false}
   ]
 }

@@ -94,16 +94,16 @@ function el(tag, text, cls){ const e=document.createElement(tag); if(text!=null)
 
 async function init(){
   const d = await (await fetch("/api/defaults")).json();
-  S.property = d.property; S.sources = d.sources.map(s=>({...s, include:true})); S.assumptions = d.assumptions;
-  const b=$("banner"); const msgs=[d.property.status, d.sources_status].filter(m=>/PLACEHOLDER/i.test(m||""));
-  if(msgs.length){ b.hidden=false; b.textContent="Sample data: "+msgs.join(" | "); }
+  S.property = d.property; S.sources = d.sources.map(s=>({...s, include:s.include!==false})); S.assumptions = d.assumptions;
+  const b=$("banner"); const msgs=[d.property.status, d.sources_status].filter(m=>/PLACEHOLDER|INCOMPLETE/i.test(m||""));
+  if(msgs.length){ b.hidden=false; b.textContent="Data status: "+msgs.join(" | "); }
   renderProp(); renderSliders(); run();
 }
 function renderProp(){
   const p=S.property, box=$("prop"); box.textContent="";
   const rows=[["Address",p.address],["Bedrooms / baths / sqft",`${p.beds} / ${p.baths} / ${p.sqft.toLocaleString()}`],
-    ["Assessed value (county)", money(p.assessed_value)+" (not market value)"],["Current asking rent", money(p.current_asking_rent)],
-    ["HUD fair market rent (3 bed)", p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"],["Parcel", p.parcel]];
+    ["Assessed value (county)", p.assessed_value? money(p.assessed_value)+" (not market value)" : "not found yet"],["Current asking rent", money(p.current_asking_rent)],
+    ["HUD fair market rent (3 bed)", p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"],["Parcel", p.parcel||"not found yet"]];
   rows.forEach(([k,v])=>{ const r=el("div",null,"kv"); r.append(el("span",k),el("b",v)); box.append(r); });
   if(p.note) box.append(el("p",p.note,"help"));
   const a=el("a","Facts source"); a.href=p.facts_source; a.target="_blank"; a.rel="noopener"; box.append(a, document.createTextNode(" (accessed "+p.accessed+")"));
