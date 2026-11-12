@@ -18,3 +18,9 @@ Format: what I asked, what the AI proposed, what I decided, why.
 - Picked by the user from a live HotPads link after earlier candidates (2338 Lowell Blvd, 3863 S Dallas St) could not be confirmed as live listings, and a link to a single-room listing was rejected because its $900 was a per-room rent.
 - Conflicts found: Trulia lists 2 baths and says $2,800 includes required monthly fees; HotPads shows $2,800 base rent. Two nearby listings were turned off by default because availability or size was unclear (20000 E 40th Pl shows 2,890 sqft in the text but 1,736 in the title).
 - Decision: count the subject listing once (HotPads and Trulia show the same number), and count 4094 Malta St once (its ForRent reading of 2,720 is available but off by default).
+
+## Price-cut plan (2026-11-12)
+- Chosen decision: "what do I list at, and what is my plan if it does not lease?"
+- My first idea was that a cut rule would clearly beat a single price. Testing showed that with a constant daily lease chance the cut adds almost nothing, because waiting teaches you nothing. The cut only has value if the market is uncertain, so the plan averages over low/middle/high market cases taken from the reconciled range.
+- Result for this house: the sources agree closely, so the gain from the cut rule is only about $20 a year; with a deliberately wide range it is $150 to $500. This is reported on the page instead of hiding it.
+- The 25/50/25 weights on the market cases are assumed, not fitted.

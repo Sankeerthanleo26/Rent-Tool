@@ -56,6 +56,11 @@
     </section>
   </div>
 
+  <section class="card" id="plancard">
+    <h2>Price plan: list high enough, with a cut rule</h2>
+    <div id="plan"></div>
+  </section>
+
   <section class="card">
     <h2>Expected 12-month income by list price</h2>
     <p class="help">Higher rent earns more per month but takes longer to lease. The dot is the best price under these assumptions; the shaded band is the market range.</p>
@@ -122,10 +127,10 @@ function schedule(){ clearTimeout(S.timer); S.timer=setTimeout(run,120); }
 async function run(){
   $("err").textContent="";
   const p=S.property;
-  const body={subject:{beds:p.beds,baths:p.baths,sqft:p.sqft}, sources:S.sources, assumptions:S.assumptions, hud_fmr:p.hud_fmr_3br||null};
+  const body={subject:{beds:p.beds,baths:p.baths,sqft:p.sqft}, sources:S.sources, assumptions:S.assumptions, hud_fmr:p.hud_fmr_3br||null, current_ask:p.current_asking_rent||null};
   const r=await fetch("/api/recommend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
   if(!r.ok){ const e=await r.json().catch(()=>({})); $("err").textContent="Could not compute: "+(typeof e.detail==="string"?e.detail:"check inputs"); renderSources(null); return; }
-  const out=await r.json(); renderSources(out); renderRec(out); renderChart(out); renderSens(out);
+  const out=await r.json(); renderSources(out); renderRec(out); renderPlan(out); renderChart(out); renderSens(out);
 }
 function renderSources(out){
   const t=$("sources"); t.textContent="";
@@ -155,6 +160,23 @@ function renderRec(out){
   if(m.hud_note) b.append(el("p",m.hud_note,"help"));
   if(out.at_edge) b.append(el("p","The best price is at the edge of the tested range (85% to 110% of market). Treat it with caution.","help"));
   if(m.n_sources<3) b.append(el("p","Fewer than 3 sources: the range is widened because the spread is not reliable.","help"));
+}
+function renderPlan(out){
+  const b=$("plan"); b.textContent=""; const p=out.plan, pl=p.plan, s=p.single, m=out.market;
+  b.append(el("div","Plan","help"));
+  b.append(el("div",`List at ${money(pl.start)}. If it has not leased by day ${pl.cut_day}, cut to ${money(pl.cut_price)}.`,"big"));
+  const rows=[["Chance it leases before the cut", (pl.leased_before_cut*100).toFixed(0)+"%"],
+    ["Expected days to lease", pl.vacant_days.toFixed(0)+" days"],
+    ["Expected 12-month income", money(pl.income_12m)],
+    ["Best single price with no cut", `${money(s.start)} (${money(s.income_12m)})`],
+    ["Gain from having a cut rule", money(p.gain)]];
+  if(p.ask_no_cut) rows.push(["Your current ask, no cut", `${money(p.ask_no_cut.start)} (${money(p.ask_no_cut.income_12m)})`]);
+  rows.forEach(([k,v])=>{ const d=el("div",null,"kv"); d.append(el("span",k),el("b",v)); b.append(d); });
+  const note = p.gain < 100
+    ? "The sources agree closely, so there is little to learn from waiting. A cut rule is a cheap safety net here, not a big win."
+    : "The sources disagree enough that waiting teaches you something. If nobody applies by the cut day, the true market is probably at the low end of the range, so the cut protects you.";
+  b.append(el("p",note,"help"));
+  b.append(el("p",`How it works: the true market rent is treated as low (${money(m.low)}, 25%), middle (${money(m.estimate)}, 50%) or high (${money(m.high)}, 25%). Those weights are assumed. Each plan is simulated day by day under each case and the incomes are averaged.`,"help"));
 }
 function renderChart(out){
   const c=out.curve, W=640,H=285,L=64,R=24,T=12,B=50;

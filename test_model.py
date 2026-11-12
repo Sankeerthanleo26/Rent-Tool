@@ -1,7 +1,8 @@
 import math
 import pytest
 from model import (Assumptions, Source, Subject, normalize_sources, reconcile,
-                   weighted_median, evaluate, best_price, recommend)
+                   weighted_median, evaluate, best_price, recommend,
+                   plan_income, best_plan)
 
 SUBJ = Subject(beds=3, baths=2, sqft=1700)
 A = Assumptions()
@@ -83,3 +84,42 @@ def test_heavily_adjusted_comp_is_capped_and_downweighted():
     n = normalize_sources([tiny], SUBJ, A)[0]
     assert n.adjusted == pytest.approx(2500 * 0.97 * 1.25)   # capped at +25%
     assert n.weight == pytest.approx(0.5)                      # 1 / (1 + 4 x 0.25), vs 1.0 for a perfect comp
+
+
+# ---- price plan ----
+
+def test_plan_income_matches_hand_calc_when_lease_is_certain():
+    # p = 1 means it leases on day 1: income = price*(12 - 1/30.4) - fee*price - 1*cost
+    a = Assumptions(base_lease_rate=1.0)
+    r = plan_income(3000, 14, 2800, 3000, a)
+    expected = 3000 * (12 - 1 / 30.4) - 0.5 * 3000 - 40
+    assert abs(r["income"] - expected) < 1e-6
+    assert abs(r["days"] - 1) < 1e-9 and abs(r["leased_before_cut"] - 1) < 1e-9
+
+
+def test_plan_without_cut_is_close_to_evaluate():
+    a = Assumptions()
+    r = plan_income(2716, int(a.max_vacant_days), 2716, 2716, a)
+    e = evaluate(2716, 2716, a)
+    assert abs(r["income"] - e["income_12m"]) < 5
+    assert abs(r["days"] - e["vacant_days"]) < 0.1
+
+
+def test_cut_beats_no_cut_when_start_price_is_too_high_for_the_market():
+    a = Assumptions()
+    cut = plan_income(3100, 14, 2750, 2750, a)["income"]
+    hold = plan_income(3100, 365, 3100, 2750, a)["income"]
+    assert cut > hold
+
+
+def test_cut_rule_matters_more_when_sources_disagree():
+    a = Assumptions()
+    tight = best_plan({"estimate": 2716, "low": 2650, "high": 2780}, a)["gain"]
+    wide = best_plan({"estimate": 2716, "low": 2300, "high": 3130}, a)["gain"]
+    assert wide > tight >= 0
+
+
+def test_best_plan_is_at_least_as_good_as_best_single_price():
+    r = best_plan({"estimate": 2716, "low": 2612, "high": 2820}, Assumptions())
+    assert r["plan"]["income_12m"] >= r["single"]["income_12m"] - 1e-6
+    assert r["plan"]["cut_price"] < r["plan"]["start"]

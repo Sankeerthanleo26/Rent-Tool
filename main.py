@@ -53,6 +53,7 @@ class RecommendIn(BaseModel):
     sources: list[SourceIn]
     assumptions: AssumptionsIn = AssumptionsIn()
     hud_fmr: Optional[float] = Field(default=None, gt=0)
+    current_ask: Optional[float] = Field(default=None, gt=0)
 
 
 @app.get("/api/defaults")
@@ -69,7 +70,7 @@ def api_recommend(body: RecommendIn):
     if not any(s.include for s in sources):
         raise HTTPException(422, "Turn on at least one source.")
     return recommend(sources, Subject(**body.subject.model_dump()),
-                     Assumptions(**body.assumptions.model_dump()), body.hud_fmr)
+                     Assumptions(**body.assumptions.model_dump()), body.hud_fmr, body.current_ask)
 
 
 @app.get("/")

@@ -167,7 +167,8 @@ def best_price(market: float, a: Assumptions, lo: float = 0.85, hi: float = 1.10
     return {"best": best, "curve": curve, "at_edge": best is curve[0] or best is curve[-1]}
 
 
-def recommend(sources: list[Source], subject: Subject, a: Assumptions, hud_fmr: Optional[float] = None) -> dict:
+def recommend(sources: list[Source], subject: Subject, a: Assumptions, hud_fmr: Optional[float] = None,
+              current_ask: Optional[float] = None) -> dict:
     items = normalize_sources(sources, subject, a)
     rec = reconcile(items, a, hud_fmr)
     main = best_price(rec["estimate"], a)
@@ -184,5 +185,82 @@ def recommend(sources: list[Source], subject: Subject, a: Assumptions, hud_fmr: 
         "if true market rent is at the low end": alt_market(rec["low"]),
         "if true market rent is at the high end": alt_market(rec["high"]),
     }
+    plan = best_plan(rec, a)
+    if current_ask:
+        plan["ask_no_cut"] = plan_value(current_ask, int(a.max_vacant_days), current_ask, rec, a)
     return {"sources": [asdict(i) for i in items], "market": rec, "recommendation": main["best"],
-            "curve": main["curve"], "at_edge": main["at_edge"], "sensitivity": sensitivity}
+            "curve": main["curve"], "at_edge": main["at_edge"], "sensitivity": sensitivity, "plan": plan}
+
+
+# ---------------------------------------------------------------------------
+# Price plan: "list at X; if not leased by day N, cut to Y"
+# ---------------------------------------------------------------------------
+
+CUT_DAYS = (10, 14, 21, 30, 45, 60)
+CUT_SIZES = (0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.14)   # fraction taken off the starting price
+SCENARIO_PROBS = (0.25, 0.50, 0.25)                      # assumed: low end / middle / high end of the market range
+
+
+def lease_income(price: float, day: int, a: Assumptions) -> float:
+    """12-month income if the lease starts after `day` vacant days at `price` (same formula as evaluate)."""
+    months = max(0.0, 12 - day / 30.4)
+    return price * months - a.leasing_fee_pct * price - day * a.cost_per_vacant_day
+
+
+def plan_income(start: float, cut_day: int, cut_price: float, market: float, a: Assumptions) -> dict:
+    """Expected 12-month income for ONE true market rent, simulating day by day.
+
+    Each vacant day the house leases with probability p(price). Before the cut day the price is `start`,
+    after it the price is `cut_price`. Anything still unleased at the cap is treated as leasing on the cap day.
+    """
+    p1 = evaluate(start, market, a)["daily_prob"]
+    p2 = evaluate(cut_price, market, a)["daily_prob"]
+    cap = int(a.max_vacant_days)
+    alive, income, exp_days, leased_before_cut = 1.0, 0.0, 0.0, 0.0
+    for day in range(1, cap + 1):
+        price, p = (start, p1) if day <= cut_day else (cut_price, p2)
+        if day == cap:
+            p = 1.0                                   # lump the leftover probability onto the cap day
+        got = alive * p
+        income += got * lease_income(price, day, a)
+        exp_days += got * day
+        if day == cut_day:
+            leased_before_cut = 1 - alive * (1 - p)
+        alive *= 1 - p
+    return {"income": income, "days": exp_days, "leased_before_cut": leased_before_cut}
+
+
+def scenarios(market: dict) -> list[tuple[float, float]]:
+    """(probability, market rent) pairs from the reconciled range: low end, middle, high end."""
+    return list(zip(SCENARIO_PROBS, (market["low"], market["estimate"], market["high"])))
+
+
+def plan_value(start: float, cut_day: int, cut_price: float, market: dict, a: Assumptions) -> dict:
+    """Plan income averaged over the market uncertainty."""
+    inc = days = before = 0.0
+    for prob, m in scenarios(market):
+        r = plan_income(start, cut_day, cut_price, m, a)
+        inc += prob * r["income"]
+        days += prob * r["days"]
+        before += prob * r["leased_before_cut"]
+    return {"start": round(start, 2), "cut_day": cut_day, "cut_price": round(cut_price, 2),
+            "income_12m": round(inc, 2), "vacant_days": round(days, 1), "leased_before_cut": round(before, 3)}
+
+
+def best_plan(market: dict, a: Assumptions, lo: float = 0.85, hi: float = 1.10, step: float = 0.01) -> dict:
+    """Search start prices, cut days and cut sizes. Also finds the best single price (no cut) for comparison."""
+    est = market["estimate"]
+    n = int(round((hi - lo) / step)) + 1
+    best = single = None
+    for k in range(n):
+        start = est * (lo + k * step)
+        s = plan_value(start, int(a.max_vacant_days), start, market, a)  # cut day = cap means no cut
+        if single is None or s["income_12m"] > single["income_12m"]:
+            single = s
+        for cd in CUT_DAYS:
+            for c in CUT_SIZES:
+                r = plan_value(start, cd, start * (1 - c), market, a)
+                if best is None or r["income_12m"] > best["income_12m"]:
+                    best = r
+    gain = round(best["income_12m"] - single["income_12m"], 2)
+    return {"plan": best, "single": single, "gain": gain}
