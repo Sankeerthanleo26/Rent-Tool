@@ -78,7 +78,7 @@
   </section>
 
   <div class="grid">
-    <section class="card plan"><div class="eyebrow" style="color:var(--accent)">Your plan</div><div id="plan"></div></section>
+    <section class="card plan"><div class="head"><div class="eyebrow" style="color:var(--accent)">Your plan</div><div class="help" id="planstamp"></div></div><div id="plan"></div></section>
     <section class="card">
       <div class="head"><div><div class="eyebrow">Model inputs</div><h2>Assumptions</h2><p class="help">These are guesses, not facts.</p></div><button class="btn" id="reset">Reset</button></div>
       <div id="sliders"></div>
@@ -141,15 +141,15 @@ function renderBanner(){
 }
 function renderProp(){
   const p=S.property, box=$("prop"); box.textContent="";
-  const head=el("div",null,"head"), t=el("div"); t.append(el("div","Your house","eyebrow"), el("h2","Property details"), el("p","Type your own house here. The numbers below update as you type.","help"));
+  const head=el("div",null,"head"), t=el("div"); t.append(el("div","Your house","eyebrow"), el("h2","Property details"), el("p","Beds, baths and sqft are used to adjust the comparable rents. Current ask is compared with the plan. Address and date are labels only: nothing is looked up from them.","help"));
   const a=el("a","Source for the example house \u2197"); a.href=p.facts_source; a.target="_blank"; a.rel="noopener";
   head.append(t,a); box.append(head);
   const form=el("div",null,"form wide");
-  [["address","Address","text"],["beds","Beds","number"],["baths","Baths","number"],["sqft","Sqft","number"],["current_asking_rent","Current ask ($/mo)","number"],["available","Available","text"]].forEach(([k,label,type])=>{
+  [["address","Address","text","label only"],["beds","Beds","number","adjusts comps"],["baths","Baths","number","adjusts comps"],["sqft","Sqft","number","adjusts comps"],["current_asking_rent","Current ask ($/mo)","number","compared with the plan"],["available","Available","text","label only"]].forEach(([k,label,type,hint])=>{
     const w=el("div"), l=el("label",label), i=document.createElement("input"); i.type=type; if(type==="number"){ i.step="any"; i.min="0"; } i.value=p[k]??"";
     i.addEventListener("input",()=>{ S.property[k]= type==="number" ? parseFloat(i.value) : i.value; if(type==="number"||k==="address") schedule(); });
-    w.append(l,i); form.append(w); });
-  box.append(form);
+    w.append(l,i,el("div",hint,"help")); form.append(w); });
+  box.append(form, el("p","","help")); box.lastChild.id="propnote";
   box.append(el("p",`Example house record: county ${p.assessed_value? money(p.assessed_value)+" assessed": "not found yet"} \u00b7 parcel ${p.parcel||"not found yet"} \u00b7 HUD fair market rent (3 bed) ${p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"}`,"help"));
   if(p.note) box.append(el("p",p.note,"help"));
 }
@@ -212,6 +212,9 @@ function renderSources(out){
   });
 }
 function renderEst(out){
+  const comps=S.sources.filter(x=>x.include&&(x.type==="asking_comp"||x.type==="leased_comp")).length;
+  const pn=$("propnote"); if(pn) pn.textContent = comps ? "" : "No comparable houses are switched on, so beds, baths and sqft cannot change the estimate. Turn on a comp or add one below.";
+  const pe=$("planstamp"); if(pe) pe.textContent="Updated "+new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"});
   const m=out.market, d=$("disagree"); d.textContent=""; d.append(el("span","Source disagreement: "+m.disagreement+" ("+(m.spread_pct*100).toFixed(0)+"% spread)","pill "+m.disagreement));
   const e=$("est"); e.textContent=""; e.append(document.createTextNode("Adjusted market estimate: "), el("b",money(m.estimate)+"/mo"), document.createTextNode(` (range ${money(m.low)} to ${money(m.high)}, ${m.n_sources} sources)`));
   if(m.hud_note) e.append(el("div",m.hud_note,"help"));
