@@ -1,8 +1,11 @@
-"""Rent pricing model: three plain functions, no randomness.
+"""Rent pricing model: plain functions, no randomness, no machine learning.
 
-1. normalize_sources  - put every source on the same basis (rent this house would achieve now)
-2. reconcile          - weighted median + a range that widens when sources disagree
-3. best_price         - trade-off between a higher rent and more empty days
+1. normalize_sources     - put every source on the same basis (rent this house would achieve now)
+2. reconcile             - weighted median + a range that widens when sources disagree
+3. evaluate/best_price   - trade-off between a higher rent and more empty days (one list price)
+4. plan_income/best_plan - the same trade-off for "list at X, cut to Y on day N", averaged over a
+                           low / middle / high market taken from the reconciled range
+5. recommend             - runs the steps above and the sensitivity checks
 
 Every assumption lives in the Assumptions dataclass so it can be shown as a slider.
 """
