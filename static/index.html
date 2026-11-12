@@ -119,7 +119,7 @@ const SLIDERS2 = [
   ["max_adjustment_pct","Largest comp adjustment",0.05,0.5,0.05,v=>(v*100).toFixed(0)+"%","Comps needing more adjustment than this are capped and trusted less."],
 ];
 const TYPES = {listing_asking:"Listing ask", asking_comp:"Asking comp", leased_comp:"Leased comp", zillow_estimate:"Estimate"};
-let S = { userCount:0, property:null, sources:[], assumptions:{}, defaults:{}, timer:null };
+let S = { seq:0, userCount:0, property:null, sources:[], assumptions:{}, defaults:{}, timer:null };
 const $ = id => document.getElementById(id);
 const money = v => "$" + Math.round(v).toLocaleString();
 const signed = v => (v>=0?"+":"−")+money(Math.abs(v));
@@ -186,13 +186,24 @@ function mkSliders(list, box){
 }
 function renderSliders(){ const a=$("sliders"), b=$("sliders2"); a.textContent=""; b.textContent=""; mkSliders(SLIDERS,a); mkSliders(SLIDERS2,b); }
 function schedule(){ clearTimeout(S.timer); S.timer=setTimeout(run,120); }
+function checkHouse(p){
+  if(!Number.isFinite(p.beds)||p.beds<0||p.beds>20) return "Beds must be a number from 0 to 20.";
+  if(!Number.isFinite(p.baths)||p.baths<0||p.baths>20) return "Baths must be a number from 0 to 20.";
+  if(!Number.isFinite(p.sqft)||p.sqft<300||p.sqft>20000) return "Sqft must be a number between 300 and 20,000.";
+  return "";
+}
 async function run(){
-  $("err").textContent=""; const p=S.property;
-  const body={subject:{beds:p.beds,baths:p.baths,sqft:p.sqft}, sources:S.sources, assumptions:S.assumptions, hud_fmr:p.hud_fmr_3br||null, current_ask:p.current_asking_rent||null};
-  const r=await fetch("/api/recommend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const p=S.property, bad=checkHouse(p), mine=++S.seq;
   renderBanner();
-  if(!r.ok){ const e=await r.json().catch(()=>({})); $("err").textContent="Could not compute: "+(typeof e.detail==="string"?e.detail:"check inputs"); renderSources(null); return; }
-  const out=await r.json(); renderSources(out); renderEst(out); renderPlan(out); renderChart(out); renderSens(out);
+  if(bad){ $("err").textContent=bad+" Showing the last good result until this is fixed."; return; }
+  $("err").textContent="";
+  const ask=Number.isFinite(p.current_asking_rent)&&p.current_asking_rent>0?p.current_asking_rent:null;
+  const body={subject:{beds:p.beds,baths:p.baths,sqft:p.sqft}, sources:S.sources, assumptions:S.assumptions, hud_fmr:p.hud_fmr_3br||null, current_ask:ask};
+  const r=await fetch("/api/recommend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  if(mine!==S.seq) return;                       // a newer request has started; ignore this old answer
+  if(!r.ok){ const e=await r.json().catch(()=>({})); $("err").textContent="Could not compute: "+(typeof e.detail==="string"?e.detail:"check inputs"); return; }
+  const out=await r.json(); if(mine!==S.seq) return;
+  renderSources(out); renderEst(out); renderPlan(out); renderChart(out); renderSens(out);
 }
 function renderSources(out){
   const t=$("sources"); t.textContent="";

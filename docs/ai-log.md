@@ -31,3 +31,8 @@ Format: what I asked, what the AI proposed, what I decided, why.
 - The mockup banner said an outlier "is excluded from the estimate". Our model flags outliers but keeps them. The banner now describes what is really true: sources turned off by the data entry, and outliers shown as "kept".
 - Sensitivity rows now match the mockup's wording (demand 20% slower, vacancy costs $25 more, and so on) but are computed by the model.
 - Price grid is 1% steps, so best prices move in about $27 jumps and two scenarios can show the same price.
+
+## Bug found by the user on the live site (2026-11-12)
+- While typing in the house fields the page showed "Could not compute: check inputs" and a "high" disagreement that did not match the sources. Cause: typing sends partial values ("2", "24", "240" on the way to "2400") and an empty field is rejected by the server, and slow responses could overwrite newer ones.
+- Fix: check the house fields in the page before calling the API, keep the last good result on screen with a plain message, and ignore any response that is not from the latest request.
+- The AI's earlier test only typed the final value, so it missed this. The user found it by typing normally.
