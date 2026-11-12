@@ -46,6 +46,11 @@
   .delta.up { color:var(--accent); font-weight:700; } .delta.down { color:var(--bad); font-weight:700; } .right { text-align:right; min-width:110px; font-variant-numeric:tabular-nums; }
   .bound { background:#f0efe9; } .boundgrid { display:grid; gap:16px; grid-template-columns:1fr; } @media (min-width:860px){ .boundgrid{ grid-template-columns:1fr 2fr; } }
   .bound ul { list-style:none; margin:0; padding:0; } .bound li { margin-bottom:8px; }
+  .form { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); margin-top:14px; } .form.wide { grid-template-columns:2fr repeat(auto-fit,minmax(110px,1fr)); }
+  .form label { font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); font-weight:600; display:block; }
+  .form input,.form select { width:100%; margin-top:4px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; font:inherit; font-size:14px; background:#fff; color:var(--ink); }
+  .addbox { border-top:1px solid var(--line); margin-top:16px; padding-top:12px; } .addbox summary { font-weight:600; color:var(--accent); font-size:14px; }
+  .btn.primary { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600; } .linkbtn { background:none; border:0; color:var(--bad); font:inherit; font-size:12.5px; cursor:pointer; padding:0; }
   .foot { text-align:center; color:var(--muted); font-size:12.5px; margin-top:24px; }
   a { color:var(--accent); } #err { color:var(--bad); } svg text { font:11px Inter,system-ui,sans-serif; fill:var(--muted); }
   .legend { display:flex; gap:20px; justify-content:center; font-size:12.5px; color:var(--muted); margin-top:6px; } .legend i { display:inline-block; width:22px; height:3px; vertical-align:middle; margin-right:6px; background:var(--accent); }
@@ -68,6 +73,7 @@
       <p class="help">Comparable rents adjusted for size, timing, and listing status. Switch a source off to see how much the answer depends on it.</p></div>
       <div id="disagree"></div></div>
     <div class="tablebox"><table id="sources"></table></div>
+    <div id="addsrc"></div>
     <div class="est" id="est"></div>
   </section>
 
@@ -113,7 +119,7 @@ const SLIDERS2 = [
   ["max_adjustment_pct","Largest comp adjustment",0.05,0.5,0.05,v=>(v*100).toFixed(0)+"%","Comps needing more adjustment than this are capped and trusted less."],
 ];
 const TYPES = {listing_asking:"Listing ask", asking_comp:"Asking comp", leased_comp:"Leased comp", zillow_estimate:"Estimate"};
-let S = { property:null, sources:[], assumptions:{}, defaults:{}, timer:null };
+let S = { userCount:0, property:null, sources:[], assumptions:{}, defaults:{}, timer:null };
 const $ = id => document.getElementById(id);
 const money = v => "$" + Math.round(v).toLocaleString();
 const signed = v => (v>=0?"+":"−")+money(Math.abs(v));
@@ -124,7 +130,7 @@ async function init(){
   S.property=d.property; S.sourcesStatus=d.sources_status; S.sources=d.sources.map(s=>({...s, include:s.include!==false})); S.assumptions={...d.assumptions}; S.defaults={...d.assumptions};
   $("asof").textContent="Data as of "+(d.property.accessed||"");
   $("reset").addEventListener("click",()=>{ S.assumptions={...S.defaults}; renderSliders(); run(); });
-  renderProp(); renderSliders(); run();
+  renderProp(); addSourceBox(); renderSliders(); run();
 }
 function renderBanner(){
   const b=$("banner"); b.textContent="";
@@ -135,14 +141,39 @@ function renderBanner(){
 }
 function renderProp(){
   const p=S.property, box=$("prop"); box.textContent="";
-  const row=el("div",null,"propgrid"), left=el("div"), facts=el("div",null,"propfacts");
-  left.append(el("div","Property","eyebrow"), el("div",p.address,"val"), el("div",`${p.beds} bd · ${p.baths} ba · ${p.sqft.toLocaleString()} sqft`,"help"));
-  left.firstChild.nextSibling.style.cssText="font-size:22px;font-weight:700;margin:4px 0";
-  [["Current ask",money(p.current_asking_rent)],["Available",p.available||"-"]].forEach(([k,v])=>{ const d=el("div"); d.append(el("div",k,"lab"),el("div",v,"val")); facts.append(d); });
-  const a=el("a","Source ↗"); a.href=p.facts_source; a.target="_blank"; a.rel="noopener"; facts.append(a);
-  row.append(left,facts); box.append(row);
-  box.append(el("p",`County record: ${p.assessed_value? money(p.assessed_value)+" assessed": "not found yet"} · Parcel: ${p.parcel||"not found yet"} · HUD fair market rent (3 bed): ${p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"}`,"help"));
+  const head=el("div",null,"head"), t=el("div"); t.append(el("div","Your house","eyebrow"), el("h2","Property details"), el("p","Type your own house here. The numbers below update as you type.","help"));
+  const a=el("a","Source for the example house \u2197"); a.href=p.facts_source; a.target="_blank"; a.rel="noopener";
+  head.append(t,a); box.append(head);
+  const form=el("div",null,"form wide");
+  [["address","Address","text"],["beds","Beds","number"],["baths","Baths","number"],["sqft","Sqft","number"],["current_asking_rent","Current ask ($/mo)","number"],["available","Available","text"]].forEach(([k,label,type])=>{
+    const w=el("div"), l=el("label",label), i=document.createElement("input"); i.type=type; if(type==="number"){ i.step="any"; i.min="0"; } i.value=p[k]??"";
+    i.addEventListener("input",()=>{ S.property[k]= type==="number" ? parseFloat(i.value) : i.value; if(type==="number"||k==="address") schedule(); });
+    w.append(l,i); form.append(w); });
+  box.append(form);
+  box.append(el("p",`Example house record: county ${p.assessed_value? money(p.assessed_value)+" assessed": "not found yet"} \u00b7 parcel ${p.parcel||"not found yet"} \u00b7 HUD fair market rent (3 bed) ${p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"}`,"help"));
   if(p.note) box.append(el("p",p.note,"help"));
+}
+function addSourceBox(){
+  const box=$("addsrc"); box.textContent="";
+  const d=el("details",null,"addbox"); d.append(el("summary","+ Add a source (a listing or estimate you found)"));
+  d.append(el("p","Add a rent you found yourself. Asking comps are adjusted for size and layout, so fill in beds, baths and sqft when you know them.","help"));
+  const form=el("div",null,"form"), f={};
+  [["name","Name or address","text"],["type","Type","select"],["value","Rent ($/mo)","number"],["beds","Beds","number"],["baths","Baths","number"],["sqft","Sqft","number"],["age_days","Age (days)","number"],["distance_mi","Distance (mi)","number"]].forEach(([k,label,type])=>{
+    const w=el("div"), l=el("label",label); let i;
+    if(type==="select"){ i=document.createElement("select"); [["asking_comp","Asking comp"],["leased_comp","Leased comp"],["listing_asking","Listing ask (this house)"],["zillow_estimate","Estimate"]].forEach(([v,t])=>{ const o=el("option",t); o.value=v; i.append(o); }); }
+    else { i=document.createElement("input"); i.type=type; if(type==="number"){ i.step="any"; i.min="0"; } }
+    f[k]=i; w.append(l,i); form.append(w); });
+  const msg=el("p","","help"), btn=el("button","Add source","btn primary"); btn.type="button";
+  btn.addEventListener("click",()=>{
+    const name=f.name.value.trim(), value=parseFloat(f.value.value);
+    if(!name){ msg.textContent="Give it a name or address."; return; }
+    if(!(value>0)){ msg.textContent="Enter a rent above 0."; return; }
+    const num=k=>{ const v=parseFloat(f[k].value); return Number.isFinite(v)?v:null; };
+    S.sources.push({id:"user_"+(++S.userCount), name, type:f.type.value, value, beds:num("beds"), baths:num("baths"), sqft:num("sqft")>0?num("sqft"):null,
+      age_days:num("age_days"), distance_mi:num("distance_mi"), include:true, user:true, note:"Added by you."});
+    msg.textContent="Added."; Object.values(f).forEach(i=>{ if(i.tagName==="INPUT") i.value=""; }); run();
+  });
+  d.append(form, el("div",null,"") ); d.lastChild.append(btn); d.append(msg); box.append(d);
 }
 function mkSliders(list, box){
   list.forEach(([k,label,min,max,step,fmt,help])=>{
@@ -171,9 +202,10 @@ function renderSources(out){
   S.sources.forEach(s=>{
     const m=byId[s.id], tr=el("tr",null,s.include?"":"off"), c=el("td"), cb=document.createElement("input"); cb.type="checkbox"; cb.checked=s.include;
     cb.addEventListener("change",()=>{ s.include=cb.checked; run(); }); c.append(cb); tr.append(c);
-    const n=el("td",null,"src"); const a=el("a",s.name); a.href=s.url; a.target="_blank"; a.rel="noopener"; n.append(a);
+    const n=el("td",null,"src"); if(s.url){ const a=el("a",s.name); a.href=s.url; a.target="_blank"; a.rel="noopener"; n.append(a); } else n.append(el("b",s.name));
     if(m&&m.outlier) n.append(document.createTextNode(" "), el("span","Outlier (kept)","pill flag"));
     if(s.note) n.append(el("div",s.note,"help"));
+    if(s.user){ const rm=el("button","Remove","linkbtn"); rm.type="button"; rm.addEventListener("click",()=>{ S.sources=S.sources.filter(x=>x!==s); run(); }); n.append(rm); }
     if(m){ const d=el("details"); d.append(el("summary","how it was adjusted")); const ul=el("ul"); m.adjustments.forEach(x=>ul.append(el("li",x))); d.append(ul); n.append(d); }
     tr.append(n, el("td",TYPES[s.type]||s.type), el("td",money(s.value),"n"), el("td",m?money(m.adjusted):"—","n"), el("td",m&&tot?Math.round(m.weight/tot*100)+"%":"—","n"));
     t.append(tr);
