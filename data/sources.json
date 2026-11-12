@@ -1,0 +1,20 @@
+{
+  "status": "PLACEHOLDER DATA from earlier searches. Listing liveness, ages and distances are unverified. Replace with comps you confirm.",
+  "accessed": "2026-11-11",
+  "sources": [
+    {"id": "subject_listing", "name": "120 S Raleigh St asking (Zillow, Aug 2025)", "type": "listing_asking", "value": 2850, "age_days": 450,
+     "url": "https://www.zillow.com/homedetails/120-S-Raleigh-St-Denver-CO-80219/13340377_zpid", "note": "Listing removed 8/22/2025; stale"},
+    {"id": "zillow_est", "name": "Zillow Rent Zestimate", "type": "zillow_estimate", "value": 2572, "age_days": 0,
+     "url": "https://www.zillow.com/homedetails/120-S-Raleigh-St-Denver-CO-80219/13340377_zpid", "note": "Opaque automated estimate"},
+    {"id": "mariposa", "name": "1076 Mariposa St (Rentler)", "type": "asking_comp", "value": 2900, "beds": 3, "baths": 2, "sqft": 1701,
+     "url": "https://www.rentler.com/places-for-rent/co/denver/1076-mariposa-street/11560941", "note": "Age and distance unknown"},
+    {"id": "xavier", "name": "142 S Xavier St (RentGrace)", "type": "asking_comp", "value": 2525, "beds": 3, "baths": 1, "sqft": 950,
+     "url": "https://www.rentgrace.com/denver-homes-for-rent", "note": "Same neighborhood area; small house; age unknown"},
+    {"id": "hazel", "name": "2712 S Hazel Ct (Rentler)", "type": "asking_comp", "value": 2600, "beds": 3, "baths": 1, "sqft": 1700,
+     "url": "https://www.rentler.com/places-for-rent/co/denver/2712-s-hazel-ct/12702127", "note": "Cached page references 2024; likely stale"},
+    {"id": "gvr", "name": "18760 E 66th Pl (Rentler)", "type": "asking_comp", "value": 2800, "beds": 3, "baths": 2.5, "sqft": 1300,
+     "url": "https://rentler.com/places-for-rent/co/denver/18760-east-66th-pl/10956996", "note": "Green Valley Ranch, far from subject; liveness unconfirmed"},
+    {"id": "grove", "name": "2431 Grove St (Rentler)", "type": "asking_comp", "value": 3350, "beds": 3, "baths": 2, "sqft": 1600,
+     "url": "https://www.rentler.com/places-for-rent/co/denver/2431-grove-street/13034180", "note": "Highlands; pricier area; liveness unconfirmed"}
+  ]
+}

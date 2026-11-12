@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rent pricing tool</title>
+<style>
+  :root { --bg:#faf9f5; --card:#fff; --ink:#1f1e1d; --muted:#6b6a65; --line:#e3e0d6; --accent:#0f6e56; --warn:#854f0b; --warnbg:#faeeda; --bad:#a32d2d; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif; }
+  main { max-width:980px; margin:0 auto; padding:20px 16px 60px; }
+  h1 { font-size:22px; margin:0 0 4px; } h2 { font-size:16px; margin:0 0 10px; }
+  .sub { color:var(--muted); margin:0 0 16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+  .banner { background:var(--warnbg); color:var(--warn); border-radius:8px; padding:10px 12px; margin-bottom:16px; font-size:14px; }
+  .grid { display:grid; gap:16px; grid-template-columns:1fr; } @media (min-width:800px){ .grid{ grid-template-columns:1fr 1fr; } }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th,td { text-align:left; padding:6px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:500; } td.n,th.n { text-align:right; font-variant-numeric:tabular-nums; }
+  .tablewrap { overflow-x:auto; }
+  .big { font-size:34px; font-weight:600; color:var(--accent); line-height:1.1; }
+  .kv { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--line); } .kv:last-child{border:0}
+  .pill { display:inline-block; padding:1px 8px; border-radius:99px; font-size:12px; background:#eee; }
+  .pill.high{ background:#fcebeb; color:var(--bad);} .pill.medium{ background:var(--warnbg); color:var(--warn);} .pill.low{ background:#e1f5ee; color:#085041;}
+  .slider { margin-bottom:12px; } .slider label { display:flex; justify-content:space-between; font-size:14px; }
+  .slider input { width:100%; } .help { color:var(--muted); font-size:12.5px; }
+  details { margin-top:6px; color:var(--muted); font-size:12.5px; } summary { cursor:pointer; }
+  ul { margin:6px 0 0 18px; padding:0; } li { margin-bottom:4px; }
+  a { color:var(--accent); } #err { color:var(--bad); }
+  svg text { font:11px system-ui,sans-serif; fill:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Rent pricing tool</h1>
+  <p class="sub">What should a small landlord list this house at? Sources disagree, so we show each one, how we combine them, and what the answer depends on.</p>
+  <div id="banner" class="banner" hidden></div>
+  <p id="err"></p>
+
+  <section class="card"><h2>Property</h2><div id="prop"></div></section>
+
+  <section class="card">
+    <h2>Rent sources</h2>
+    <p class="help">Switch a source off to see how much the answer depends on it. Raw is the published number; adjusted is what we compare. Weight is how much it counts.</p>
+    <div class="tablewrap"><table id="sources"></table></div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Recommendation</h2>
+      <div id="rec"></div>
+    </section>
+    <section class="card">
+      <h2>Assumptions (guesses, not facts)</h2>
+      <div id="sliders"></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Expected 12-month income by list price</h2>
+    <p class="help">Higher rent earns more per month but takes longer to lease. The dot is the best price under these assumptions; the shaded band is the market range.</p>
+    <div id="chart"></div>
+  </section>
+
+  <section class="card"><h2>What would change the recommendation</h2><div id="sens"></div></section>
+
+  <section class="card">
+    <h2>What this tool cannot know</h2>
+    <ul>
+      <li>It does not know what tenants actually pay. Most public rents are asking rents, so we discount them by an assumed amount.</li>
+      <li>The lease-speed assumptions (base rate and price sensitivity) are guesses. Public data on price versus days-to-lease for houses is thin. The sliders show how much they matter.</li>
+      <li>One house and one moment in time. There is no backtest, so we cannot say how accurate it is.</li>
+      <li>It does not know the house's condition, the landlord's finances, or this week's demand.</li>
+      <li>Market reports mostly describe apartments, not houses, so they are not used for the rent level.</li>
+      <li>It supports a decision; it does not make it.</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+const SLIDERS = [
+  ["asking_to_lease_discount","Asking-to-lease discount",0,0.15,0.005,v=>(v*100).toFixed(1)+"%","Asking rents are cut by this much before comparing."],
+  ["base_lease_rate","Daily lease chance at market price",0.01,0.15,0.005,v=>(v*100).toFixed(1)+"%","At 4% a day, a house priced at market takes about 25 days."],
+  ["price_sensitivity","Price sensitivity",0,20,0.5,v=>v.toFixed(1),"How fast lease chance drops as price rises above market."],
+  ["cost_per_vacant_day","Cost per vacant day",0,150,5,v=>"$"+v,"Taxes, utilities, upkeep while empty. Raise it for a landlord who wants to fill fast."],
+  ["leasing_fee_pct","Leasing fee (months of rent)",0,1.5,0.05,v=>v.toFixed(2),"Paid once when a tenant is found."],
+  ["size_elasticity","Size adjustment strength",0,1,0.05,v=>v.toFixed(2),"How much a bigger or smaller comp's rent is scaled."],
+  ["max_adjustment_pct","Largest comp adjustment",0.05,0.5,0.05,v=>(v*100).toFixed(0)+"%","Comps needing more adjustment than this are capped and trusted less."],
+];
+let S = { property:null, sources:[], assumptions:{}, timer:null };
+const $ = id => document.getElementById(id);
+const money = v => "$" + Math.round(v).toLocaleString();
+function el(tag, text, cls){ const e=document.createElement(tag); if(text!=null) e.textContent=text; if(cls) e.className=cls; return e; }
+
+async function init(){
+  const d = await (await fetch("/api/defaults")).json();
+  S.property = d.property; S.sources = d.sources.map(s=>({...s, include:true})); S.assumptions = d.assumptions;
+  const b=$("banner"); const msgs=[d.property.status, d.sources_status].filter(m=>/PLACEHOLDER/i.test(m||""));
+  if(msgs.length){ b.hidden=false; b.textContent="Sample data: "+msgs.join(" | "); }
+  renderProp(); renderSliders(); run();
+}
+function renderProp(){
+  const p=S.property, box=$("prop"); box.textContent="";
+  const rows=[["Address",p.address],["Bedrooms / baths / sqft",`${p.beds} / ${p.baths} / ${p.sqft.toLocaleString()}`],
+    ["Assessed value (county)", money(p.assessed_value)+" (not market value)"],["Current asking rent", money(p.current_asking_rent)],
+    ["HUD fair market rent (3 bed)", p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"],["Parcel", p.parcel]];
+  rows.forEach(([k,v])=>{ const r=el("div",null,"kv"); r.append(el("span",k),el("b",v)); box.append(r); });
+  if(p.note) box.append(el("p",p.note,"help"));
+  const a=el("a","Facts source"); a.href=p.facts_source; a.target="_blank"; a.rel="noopener"; box.append(a, document.createTextNode(" (accessed "+p.accessed+")"));
+}
+function renderSliders(){
+  const box=$("sliders"); box.textContent="";
+  SLIDERS.forEach(([k,label,min,max,step,fmt,help])=>{
+    const w=el("div",null,"slider"), l=el("label"), name=el("span",label), val=el("b",fmt(S.assumptions[k]));
+    l.append(name,val);
+    const i=document.createElement("input"); i.type="range"; i.min=min; i.max=max; i.step=step; i.value=S.assumptions[k];
+    i.addEventListener("input",()=>{ S.assumptions[k]=parseFloat(i.value); val.textContent=fmt(S.assumptions[k]); schedule(); });
+    w.append(l,i,el("div",help,"help")); box.append(w);
+  });
+}
+function schedule(){ clearTimeout(S.timer); S.timer=setTimeout(run,120); }
+async function run(){
+  $("err").textContent="";
+  const p=S.property;
+  const body={subject:{beds:p.beds,baths:p.baths,sqft:p.sqft}, sources:S.sources, assumptions:S.assumptions, hud_fmr:p.hud_fmr_3br||null};
+  const r=await fetch("/api/recommend",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  if(!r.ok){ const e=await r.json().catch(()=>({})); $("err").textContent="Could not compute: "+(typeof e.detail==="string"?e.detail:"check inputs"); renderSources(null); return; }
+  const out=await r.json(); renderSources(out); renderRec(out); renderChart(out); renderSens(out);
+}
+function renderSources(out){
+  const t=$("sources"); t.textContent="";
+  const head=el("tr"); ["On","Source","Type","Raw","Adjusted","Weight"].forEach((h,i)=>head.append(el("th",h,i>=3?"n":"")));
+  t.append(head);
+  const byId={}; if(out) out.sources.forEach(s=>byId[s.id]=s);
+  S.sources.forEach(s=>{
+    const tr=el("tr"), c=el("td"), cb=document.createElement("input"); cb.type="checkbox"; cb.checked=s.include;
+    cb.addEventListener("change",()=>{ s.include=cb.checked; run(); }); c.append(cb); tr.append(c);
+    const n=el("td"); const a=el("a",s.name); a.href=s.url; a.target="_blank"; a.rel="noopener"; n.append(a);
+    if(s.note) n.append(el("div",s.note,"help"));
+    const m=byId[s.id];
+    if(m){ const d=el("details"); d.append(el("summary","how it was adjusted")); const ul=el("ul"); m.adjustments.forEach(x=>ul.append(el("li",x))); d.append(ul); n.append(d);
+      if(m.outlier) n.append(el("div","Flagged as an outlier (kept in the calculation)","help")); }
+    tr.append(n, el("td",s.type.replace("_"," ")), el("td",money(s.value),"n"), el("td",m?money(m.adjusted):"off","n"), el("td",m?m.weight.toFixed(2):"-","n"));
+    t.append(tr);
+  });
+}
+function renderRec(out){
+  const b=$("rec"); b.textContent=""; const m=out.market, r=out.recommendation;
+  b.append(el("div","Suggested list price","help"), el("div",money(r.price)+" / month","big"));
+  const rows=[["Market estimate",`${money(m.estimate)} (range ${money(m.low)} to ${money(m.high)})`],
+    ["Expected days to lease", r.vacant_days.toFixed(0)+" days"],["Expected 12-month income", money(r.income_12m)],
+    ["Sources used", m.n_sources+(m.outliers.length?" ("+m.outliers.length+" outlier flagged)":"")]];
+  rows.forEach(([k,v])=>{ const d=el("div",null,"kv"); d.append(el("span",k),el("b",v)); b.append(d); });
+  const dd=el("div",null,"kv"); const pill=el("span",m.disagreement+" ("+(m.spread_pct*100).toFixed(0)+"% spread)","pill "+m.disagreement); dd.append(el("span","Source disagreement"),pill); b.append(dd);
+  if(m.hud_note) b.append(el("p",m.hud_note,"help"));
+  if(out.at_edge) b.append(el("p","The best price is at the edge of the tested range (85% to 110% of market). Treat it with caution.","help"));
+  if(m.n_sources<3) b.append(el("p","Fewer than 3 sources: the range is widened because the spread is not reliable.","help"));
+}
+function renderChart(out){
+  const c=out.curve, W=640,H=285,L=64,R=24,T=12,B=50;
+  const xs=c.map(p=>p.price), ys=c.map(p=>p.income_12m);
+  const x0=Math.min(...xs), x1=Math.max(...xs); let y0=Math.min(...ys), y1=Math.max(...ys); const pad=(y1-y0)*0.1||1; y0-=pad; y1+=pad;
+  const X=v=>L+(v-x0)/(x1-x0)*(W-L-R), Y=v=>T+(1-(v-y0)/(y1-y0))*(H-T-B);
+  const m=out.market, best=out.recommendation;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Expected income by list price">`;
+  const bx0=Math.max(X(m.low),L), bx1=Math.min(X(m.high),W-R);
+  if(bx1>bx0) s+=`<rect x="${bx0}" y="${T}" width="${bx1-bx0}" height="${H-T-B}" fill="#0f6e56" opacity="0.10"/>`;
+  for(let i=0;i<=4;i++){ const v=y0+(y1-y0)*i/4, y=Y(v); s+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#e3e0d6"/><text x="${L-6}" y="${y+4}" text-anchor="end">${money(v)}</text>`; }
+  for(let i=0;i<=4;i++){ const v=x0+(x1-x0)*i/4; s+=`<text x="${X(v)}" y="${H-B+16}" text-anchor="${i==4?'end':i==0?'start':'middle'}">${money(v)}</text>`; }
+  s+=`<polyline fill="none" stroke="#0f6e56" stroke-width="2" points="${c.map(p=>X(p.price)+","+Y(p.income_12m)).join(" ")}"/>`;
+  s+=`<line x1="${X(m.estimate)}" x2="${X(m.estimate)}" y1="${T}" y2="${H-B}" stroke="#6b6a65" stroke-dasharray="4 3"/><text x="${X(m.estimate)+4}" y="${T+10}">market estimate</text>`;
+  s+=`<circle cx="${X(best.price)}" cy="${Y(best.income_12m)}" r="5" fill="#0f6e56"/>`;
+  s+=`<text x="${(W-R+L)/2}" y="${H-6}" text-anchor="middle">List price per month</text></svg>`;
+  $("chart").innerHTML=s;
+}
+function renderSens(out){
+  const b=$("sens"); b.textContent=""; const base=out.recommendation.price;
+  b.append(el("p","Best list price under each change (everything else held the same). Base case: "+money(base)+".","help"));
+  Object.entries(out.sensitivity).forEach(([k,v])=>{ const d=el("div",null,"kv"); const diff=v-base; d.append(el("span",k), el("b",money(v)+"  ("+(diff>=0?"+":"-")+money(Math.abs(diff)).slice(0)+")")); b.append(d); });
+}
+init().catch(e=>{ $("err").textContent="Failed to load: "+e; });
+</script>
+</body>
+</html>

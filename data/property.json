@@ -1,0 +1,14 @@
+{
+  "status": "PLACEHOLDER - replace with the live listing you pick",
+  "address": "120 S Raleigh St, Denver, CO 80219",
+  "beds": 3, "baths": 2, "sqft": 1740,
+  "parcel": "0507422022000",
+  "assessed_value": 563800,
+  "assessed_value_note": "Zillow public tax history; not market value",
+  "current_asking_rent": 2850,
+  "note": "This house is off market (listing removed 8/22/2025), so it is a test case only, not the submission property.",
+  "facts_source": "https://www.zillow.com/homedetails/120-S-Raleigh-St-Denver-CO-80219/13340377_zpid",
+  "accessed": "2026-11-11",
+  "hud_fmr_3br": null,
+  "hud_fmr_note": "TODO: look up the current HUD fair market rent for Denver 3 bedrooms and enter it here"
+}
