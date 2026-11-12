@@ -2,7 +2,9 @@
   "status": "INCOMPLETE: live listing confirmed 2026-11-11 on HotPads and Trulia. County record and HUD fair market rent not yet entered.",
   "address": "18674 E 40th Pl, Denver, CO 80249",
   "neighborhood": "Gateway - Green Valley Ranch",
-  "beds": 3, "baths": 2, "sqft": 1626,
+  "beds": 3,
+  "baths": 2,
+  "sqft": 1626,
   "parcel": null,
   "assessed_value": null,
   "assessed_value_note": "TODO: Denver Assessor property search (parcel, assessed value, year built, taxes)",
@@ -11,5 +13,6 @@
   "facts_source": "https://hotpads.com/18674-e-40th-pl-denver-co-80249-u48qpq/pad",
   "accessed": "2026-11-11",
   "hud_fmr_3br": null,
-  "hud_fmr_note": "TODO: look up the current HUD fair market rent for Denver 3 bedrooms and enter it here"
+  "hud_fmr_note": "TODO: look up the current HUD fair market rent for Denver 3 bedrooms and enter it here",
+  "available": "Nov 28"
 }

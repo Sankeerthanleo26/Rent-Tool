@@ -24,3 +24,10 @@ Format: what I asked, what the AI proposed, what I decided, why.
 - My first idea was that a cut rule would clearly beat a single price. Testing showed that with a constant daily lease chance the cut adds almost nothing, because waiting teaches you nothing. The cut only has value if the market is uncertain, so the plan averages over low/middle/high market cases taken from the reconciled range.
 - Result for this house: the sources agree closely, so the gain from the cut rule is only about $20 a year; with a deliberately wide range it is $150 to $500. This is reported on the page instead of hiding it.
 - The 25/50/25 weights on the market cases are assumed, not fitted.
+
+## Page redesign from the Figma Make mockup (2026-11-12)
+- The user made a mockup (Figma Make) from a prompt Claude wrote. I rebuilt the page in plain HTML/CSS to match its layout and style.
+- The mockup's numbers were sample values, not model output (for example comps that are not in our data, a +$640 cut-rule gain, an 88% chance of leasing before the cut). They were not copied. The page shows what the model computes: the gain from the cut rule is about $20 for this house.
+- The mockup banner said an outlier "is excluded from the estimate". Our model flags outliers but keeps them. The banner now describes what is really true: sources turned off by the data entry, and outliers shown as "kept".
+- Sensitivity rows now match the mockup's wording (demand 20% slower, vacancy costs $25 more, and so on) but are computed by the model.
+- Price grid is 1% steps, so best prices move in about $27 jumps and two scenarios can show the same price.

@@ -71,7 +71,7 @@ def test_excluding_a_source_changes_result_and_recommend_runs():
     fewer = recommend(srcs, SUBJ, A)
     assert fewer["market"]["n_sources"] == 2
     assert full["market"]["estimate"] != fewer["market"]["estimate"]
-    assert set(full["sensitivity"]) and full["recommendation"]["price"] > 0
+    assert len(full["sensitivity"]) == 6 and full["recommendation"]["price"] > 0
 
 
 def test_no_sources_raises():

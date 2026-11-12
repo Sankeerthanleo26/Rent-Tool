@@ -179,12 +179,21 @@ def recommend(sources: list[Source], subject: Subject, a: Assumptions, hud_fmr: 
     def alt_market(m):
         return best_price(m, a)["best"]["price"]
 
-    sensitivity = {
-        "if price sensitivity is halved": alt(price_sensitivity=a.price_sensitivity * 0.5),
-        "if price sensitivity is 1.5x": alt(price_sensitivity=a.price_sensitivity * 1.5),
-        "if true market rent is at the low end": alt_market(rec["low"]),
-        "if true market rent is at the high end": alt_market(rec["high"]),
-    }
+    ps = a.price_sensitivity
+    sensitivity = [
+        {"label": "Demand is 20% slower", "detail": f"Daily lease chance falls to {a.base_lease_rate * 0.8:.1%}",
+         "price": alt(base_lease_rate=a.base_lease_rate * 0.8)},
+        {"label": "Vacancy costs $25 more per day", "detail": "Carrying costs and other losses while empty",
+         "price": alt(cost_per_vacant_day=a.cost_per_vacant_day + 25)},
+        {"label": "Renters are less price-sensitive", "detail": f"Price sensitivity halved, to {ps * 0.5:.1f}",
+         "price": alt(price_sensitivity=ps * 0.5)},
+        {"label": "Renters are more price-sensitive", "detail": f"Price sensitivity 1.5x, to {ps * 1.5:.1f}",
+         "price": alt(price_sensitivity=ps * 1.5)},
+        {"label": "True market rent is at the low end", "detail": f"Market at {rec['low']:,.0f} instead of {rec['estimate']:,.0f}",
+         "price": alt_market(rec["low"])},
+        {"label": "True market rent is at the high end", "detail": f"Market at {rec['high']:,.0f} instead of {rec['estimate']:,.0f}",
+         "price": alt_market(rec["high"])},
+    ]
     plan = best_plan(rec, a)
     if current_ask:
         plan["ask_no_cut"] = plan_value(current_ask, int(a.max_vacant_days), current_ask, rec, a)
