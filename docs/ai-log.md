@@ -36,3 +36,8 @@ Format: what I asked, what the AI proposed, what I decided, why.
 - While typing in the house fields the page showed "Could not compute: check inputs" and a "high" disagreement that did not match the sources. Cause: typing sends partial values ("2", "24", "240" on the way to "2400") and an empty field is rejected by the server, and slow responses could overwrite newer ones.
 - Fix: check the house fields in the page before calling the API, keep the last good result on screen with a plain message, and ignore any response that is not from the latest request.
 - The AI's earlier test only typed the final value, so it missed this. The user found it by typing normally.
+
+## Layout simplified to three zones (2026-11-13)
+- The user judged the page too busy for a small landlord (many inputs, background detail on the first screen, everything one green) and sketched a layout: inputs on top, the answer and graph in the middle, "further analysis" at the bottom. He also asked for inputs in green and outputs in orange.
+- The AI first rebuilt the page around the sketch: (1) house facts and the rents found, (2) the plan, three key numbers and the income chart, (3) a collapsed "Further analysis" holding the adjustment table, assumption sliders, sensitivity, house record and limits.
+- Address and "available" are no longer input boxes, since they were labels only and made it look as if they changed the numbers. Model and API are unchanged; all 20 tests pass.

@@ -5,107 +5,107 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rent Plan</title>
 <style>
-  :root { --bg:#f6f5f0; --card:#fffefb; --ink:#1c2420; --muted:#6b6f69; --line:#e6e3d9; --accent:#2b6a50; --accentbg:#e8f0eb;
-          --warn:#7a5212; --warnbg:#fbf3dc; --warnline:#ecd9a0; --bad:#a3392d; }
+  :root { --bg:#f6f5f0; --ink:#1c2420; --muted:#6b6f69; --line:#e4e1d6;
+          --in:#2b6a50; --inbg:#f1f8f4; --inline:#c3dacb;
+          --out:#c4560a; --outbg:#fff7ee; --outline:#f1cfa9; --bad:#a3392d; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif; }
-  main { max-width:1000px; margin:0 auto; padding:36px 24px 56px; }
-  header { display:flex; align-items:center; gap:16px; margin-bottom:24px; }
-  .logo { width:56px; height:56px; border-radius:14px; background:var(--accent); color:#fff; display:grid; place-items:center; font-weight:700; font-size:18px; }
-  h1 { font-size:28px; margin:0; letter-spacing:-0.02em; } .tag { color:var(--muted); margin:2px 0 0; }
-  .asof { margin-left:auto; color:var(--muted); font-size:14px; align-self:flex-start; }
-  h2 { font-size:22px; margin:2px 0 4px; letter-spacing:-0.01em; }
-  .eyebrow { font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; margin-bottom:20px; }
-  .banner { background:var(--warnbg); border:1px solid var(--warnline); color:var(--warn); border-radius:12px; padding:12px 16px; margin-bottom:20px; font-size:14px; }
-  .banner p { margin:2px 0; } .banner b { color:#5c3d0a; }
-  .grid { display:grid; gap:20px; grid-template-columns:1fr; margin-bottom:20px; } @media (min-width:860px){ .grid{ grid-template-columns:1.55fr 1fr; } } .grid .card { margin:0; }
-  .plan { border-top:4px solid var(--accent); }
-  .bigline { font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-0.02em; margin:14px 0 22px; } .bigline span { color:var(--accent); }
-  .kv { display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-top:1px solid var(--line); } .kv span { color:var(--muted); } .kv b { font-variant-numeric:tabular-nums; }
-  .kv b.gain { color:var(--accent); }
-  .propgrid { display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; align-items:flex-start; }
-  .propfacts { display:flex; gap:32px; align-items:flex-start; } .propfacts .lab { font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; } .propfacts .val { font-size:20px; font-weight:700; }
-  table { width:100%; border-collapse:collapse; font-size:14px; }
-  .tablebox { border:1px solid var(--line); border-radius:12px; overflow-x:auto; margin-top:18px; }
-  th,td { text-align:left; padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top; } tr:last-child td { border-bottom:0; }
-  th { font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); background:#f9f8f3; } td.n,th.n { text-align:right; font-variant-numeric:tabular-nums; }
-  tr.off td { color:#9a9d97; } td.src a { color:var(--ink); font-weight:600; text-decoration:none; } tr.off td.src a { color:#9a9d97; }
-  input[type=checkbox] { width:18px; height:18px; accent-color:var(--accent); }
-  .pill { display:inline-block; padding:2px 10px; border-radius:99px; font-size:12px; font-weight:600; background:#eee; border:1px solid transparent; }
-  .pill.low { background:var(--accentbg); color:var(--accent); border-color:#bfd6c8; } .pill.medium,.pill.flag { background:var(--warnbg); color:var(--warn); border-color:var(--warnline); } .pill.high { background:#fbe8e5; color:var(--bad); border-color:#efc4be; }
-  .help { color:var(--muted); font-size:13px; margin:4px 0 0; }
-  .est { text-align:right; color:var(--muted); font-size:14px; margin-top:14px; } .est b { color:var(--ink); }
-  details { margin-top:4px; color:var(--muted); font-size:12.5px; } summary { cursor:pointer; } ul { margin:6px 0 0 18px; padding:0; } li { margin-bottom:4px; }
-  .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
-  .btn { border:1px solid var(--line); background:#fff; border-radius:8px; padding:5px 12px; font:inherit; font-size:13px; cursor:pointer; }
-  .slider { padding:14px 0; border-top:1px solid var(--line); } .slider label { display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:14px; }
-  .slider .v { border:1px solid var(--line); border-radius:8px; padding:2px 10px; font-weight:600; font-size:13px; background:#fff; }
-  .slider input { width:100%; accent-color:var(--accent); margin:10px 0 2px; }
-  .rowline { display:flex; justify-content:space-between; gap:16px; padding:14px 0; border-top:1px solid var(--line); align-items:center; } .rowline .t { font-weight:600; } .rowline .d { font-size:13px; color:var(--muted); }
-  .delta.up { color:var(--accent); font-weight:700; } .delta.down { color:var(--bad); font-weight:700; } .right { text-align:right; min-width:110px; font-variant-numeric:tabular-nums; }
-  .bound { background:#f0efe9; } .boundgrid { display:grid; gap:16px; grid-template-columns:1fr; } @media (min-width:860px){ .boundgrid{ grid-template-columns:1fr 2fr; } }
-  .bound ul { list-style:none; margin:0; padding:0; } .bound li { margin-bottom:8px; }
-  .form { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); margin-top:14px; } .form.wide { grid-template-columns:2fr repeat(auto-fit,minmax(110px,1fr)); }
+  main { max-width:860px; margin:0 auto; padding:32px 20px 56px; }
+  header { margin-bottom:20px; } h1 { font-size:26px; margin:0; letter-spacing:-0.02em; } .tag { color:var(--muted); margin:2px 0 0; }
+  h2 { font-size:22px; margin:2px 0 4px; letter-spacing:-0.01em; } h3 { font-size:15px; margin:26px 0 6px; }
+  .eyebrow { font-size:12px; letter-spacing:.09em; text-transform:uppercase; font-weight:700; }
+  .help { color:var(--muted); font-size:13px; margin:4px 0 0; } .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  .zone { border-radius:16px; padding:24px; margin-bottom:20px; border:1px solid var(--line); }
+  .zone.in { background:var(--inbg); border-color:var(--inline); border-top:5px solid var(--in); } .zone.in .eyebrow { color:var(--in); }
+  .zone.out { background:var(--outbg); border-color:var(--outline); border-top:5px solid var(--out); } .zone.out .eyebrow { color:var(--out); }
+  .zone.more { background:#fff; padding:0; } .zone.more > summary { cursor:pointer; padding:18px 24px; font-weight:700; font-size:16px; } .zone.more > .inner { padding:0 24px 24px; }
+  .picker { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 4px; } .picker button { border:1px solid var(--inline); background:#fff; border-radius:10px; padding:8px 14px; font:inherit; text-align:left; cursor:pointer; }
+  .picker button b { display:block; font-size:14px; } .picker button span { font-size:12px; color:var(--muted); } .picker button.on { border-color:var(--in); background:#e3f1e9; box-shadow:0 0 0 1px var(--in) inset; }
+  .form { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); margin-top:16px; }
   .form label { font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); font-weight:600; display:block; }
-  .form input,.form select { width:100%; margin-top:4px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; font:inherit; font-size:14px; background:#fff; color:var(--ink); }
-  .addbox { border-top:1px solid var(--line); margin-top:16px; padding-top:12px; } .addbox summary { font-weight:600; color:var(--accent); font-size:14px; }
-  .btn.primary { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600; } .linkbtn { background:none; border:0; color:var(--bad); font:inherit; font-size:12.5px; cursor:pointer; padding:0; }
-  .picker { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; } .picker button { border:1px solid var(--line); background:var(--card); border-radius:12px; padding:10px 16px; font:inherit; text-align:left; cursor:pointer; }
-  .picker button b { display:block; font-size:14px; } .picker button span { font-size:12.5px; color:var(--muted); } .picker button.on { border-color:var(--accent); background:var(--accentbg); box-shadow:0 0 0 1px var(--accent) inset; }
-  .foot { text-align:center; color:var(--muted); font-size:12.5px; margin-top:24px; }
-  a { color:var(--accent); } #err { color:var(--bad); } svg text { font:11px Inter,system-ui,sans-serif; fill:var(--muted); }
-  .legend { display:flex; gap:20px; justify-content:center; font-size:12.5px; color:var(--muted); margin-top:6px; } .legend i { display:inline-block; width:22px; height:3px; vertical-align:middle; margin-right:6px; background:var(--accent); }
+  .form input,.form select { width:100%; margin-top:4px; padding:9px 10px; border:1px solid var(--inline); border-radius:8px; font:inherit; font-size:15px; background:#fff; color:var(--ink); }
+  .form input:focus,.form select:focus { outline:2px solid var(--in); outline-offset:0; }
+  .subhead { font-weight:700; margin:22px 0 6px; font-size:14px; }
+  .srcrow { display:flex; align-items:center; gap:12px; padding:10px 12px; background:#fff; border:1px solid var(--inline); border-radius:10px; margin-bottom:6px; }
+  .srcrow.off { opacity:.55; } .srcrow .nm { flex:1; min-width:0; } .srcrow .nm a,.srcrow .nm b { color:var(--ink); font-weight:600; text-decoration:none; } .srcrow .ty { font-size:12px; color:var(--muted); } .srcrow .rent { font-weight:700; font-variant-numeric:tabular-nums; }
+  input[type=checkbox] { width:18px; height:18px; accent-color:var(--in); }
+  .addbox { margin-top:12px; } .addbox > summary { cursor:pointer; font-weight:600; color:var(--in); font-size:14px; } .addbox details summary { cursor:pointer; color:var(--muted); font-size:13px; margin-top:10px; }
+  .btn { border:1px solid var(--line); background:#fff; border-radius:8px; padding:5px 12px; font:inherit; font-size:13px; cursor:pointer; }
+  .btn.primary { background:var(--in); color:#fff; border-color:var(--in); font-weight:600; margin-top:12px; } .linkbtn { background:none; border:0; color:var(--bad); font:inherit; font-size:12.5px; cursor:pointer; padding:0; }
+  .bigline { font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-0.02em; margin:14px 0 18px; } .bigline span { color:var(--out); }
+  .stats { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); }
+  .stat { background:#fff; border:1px solid var(--outline); border-radius:12px; padding:12px 14px; } .stat .lab { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; } .stat .val { font-size:20px; font-weight:700; margin-top:2px; } .stat .sub { font-size:12.5px; color:var(--muted); }
+  .pill { display:inline-block; padding:2px 10px; border-radius:99px; font-size:12px; font-weight:600; background:#eee; }
+  .pill.low { background:#ece9de; color:#4b4f49; } .pill.medium,.pill.flag { background:#fbe9c9; color:#7a5212; } .pill.high { background:#fbe8e5; color:var(--bad); }
+  .legend { display:flex; gap:20px; justify-content:center; font-size:12.5px; color:var(--muted); margin-top:6px; flex-wrap:wrap; } .legend i { display:inline-block; width:22px; height:3px; vertical-align:middle; margin-right:6px; background:var(--out); }
+  .kv { display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-top:1px solid var(--line); } .kv span { color:var(--muted); } .kv b { font-variant-numeric:tabular-nums; } .kv b.gain { color:var(--out); }
+  table { width:100%; border-collapse:collapse; font-size:14px; } .tablebox { border:1px solid var(--line); border-radius:12px; overflow-x:auto; margin-top:10px; }
+  th,td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; } tr:last-child td { border-bottom:0; }
+  th { font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); background:#f9f8f3; } td.n,th.n { text-align:right; font-variant-numeric:tabular-nums; }
+  tr.off td { color:#9a9d97; } td.src a { color:var(--ink); font-weight:600; text-decoration:none; }
+  details { color:var(--muted); font-size:12.5px; } summary { cursor:pointer; } ul { margin:6px 0 0 18px; padding:0; } li { margin-bottom:4px; }
+  .slider { padding:12px 0; border-top:1px solid var(--line); } .slider label { display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:14px; }
+  .slider .v { border:1px solid var(--line); border-radius:8px; padding:2px 10px; font-weight:600; font-size:13px; background:#fff; } .slider input { width:100%; accent-color:var(--in); margin:8px 0 2px; }
+  .rowline { display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-top:1px solid var(--line); align-items:center; } .rowline .t { font-weight:600; } .rowline .d { font-size:13px; color:var(--muted); }
+  .delta.up { color:var(--out); font-weight:700; } .delta.down { color:var(--bad); font-weight:700; } .right { text-align:right; min-width:110px; font-variant-numeric:tabular-nums; }
+  .cannot { list-style:none; margin:6px 0 0; padding:0; font-size:14px; color:var(--ink); } .cannot li { margin-bottom:8px; }
+  .foot { text-align:center; color:var(--muted); font-size:12.5px; margin-top:24px; } a { color:var(--in); } #err { color:var(--bad); } svg text { font:11px Inter,system-ui,sans-serif; fill:var(--muted); }
 </style>
 </head>
 <body>
 <main>
-  <header>
-    <div class="logo">RP</div>
-    <div><h1>Rent Plan</h1><p class="tag">Set a rent you can explain, and know what to do if the market says no.</p></div>
-    <div class="asof" id="asof"></div>
-  </header>
-  <nav id="houses" class="picker"></nav>
-  <div id="banner" class="banner" hidden></div>
+  <header><h1>Rent Plan</h1><p class="tag">What should I list my rent at, and when should I cut it?</p></header>
   <p id="err"></p>
 
-  <section class="card"><div id="prop"></div></section>
-
-  <section class="card">
-    <div class="head"><div><div class="eyebrow">Market inputs</div><h2>Sources</h2>
-      <p class="help">Comparable rents adjusted for size, timing, and listing status. Switch a source off to see how much the answer depends on it.</p></div>
-      <div id="disagree"></div></div>
-    <div class="tablebox"><table id="sources"></table></div>
+  <section class="zone in">
+    <div class="eyebrow">1 &middot; Your house and the rents you found</div>
+    <nav id="houses" class="picker"></nav>
+    <div id="prop"></div>
+    <div class="subhead">Rents you found nearby</div>
+    <p class="help">Switch a rent off to see how much the plan depends on it.</p>
+    <div id="srclist"></div>
     <div id="addsrc"></div>
-    <div class="est" id="est"></div>
+    <p class="help" id="banner" hidden></p>
   </section>
 
-  <div class="grid">
-    <section class="card plan"><div class="head"><div class="eyebrow" style="color:var(--accent)">Your plan</div><div class="help" id="planstamp"></div></div><div id="plan"></div></section>
-    <section class="card">
-      <div class="head"><div><div class="eyebrow">Model inputs</div><h2>Assumptions</h2><p class="help">These are guesses, not facts.</p></div><button class="btn" id="reset">Reset</button></div>
+  <section class="zone out">
+    <div class="head"><div class="eyebrow">2 &middot; Your plan</div><div class="help" id="planstamp"></div></div>
+    <div id="plan"></div>
+    <div class="subhead" style="margin-top:24px">Expected income by list price</div>
+    <p class="help">Higher rent helps until a longer vacancy costs more. This chart is for one price with no cut.</p>
+    <div id="chart"></div>
+    <div class="legend"><span><i></i>Expected income</span><span><i style="height:0;background:none;border-top:2px dashed #6b6f69"></i>Market estimate</span><span><i style="height:10px;opacity:.25"></i>Market range</span></div>
+    <p class="help" id="chartnote" style="text-align:center"></p>
+    <div id="est"></div>
+  </section>
+
+  <details class="zone more">
+    <summary>3 &middot; Further analysis: how this was worked out</summary>
+    <div class="inner">
+      <p class="help" id="status"></p>
+      <h3>Sources and how each was adjusted</h3>
+      <p class="help">Each rent is adjusted for size and timing, then weighted. The weighted middle is the market estimate.</p>
+      <div class="tablebox"><table id="sources"></table></div>
+      <h3>The plan in numbers</h3>
+      <div id="plandetail"></div>
+      <div class="head"><h3>Assumptions</h3><button class="btn" id="reset" style="margin-top:20px">Reset</button></div>
+      <p class="help">These are guesses, not facts. Move one to see how the answer changes.</p>
       <div id="sliders"></div>
       <details><summary>More adjustments</summary><div id="sliders2"></div></details>
-    </section>
-  </div>
-
-  <section class="card">
-    <div class="head"><div><div class="eyebrow">Price tradeoff</div><h2>Expected 12-month income</h2><p class="help">Higher rent helps until longer vacancy starts costing more. This chart is for a single list price with no cut.</p></div>
-      <div style="text-align:right"><div class="eyebrow">Best single-price income</div><div id="bestinc" style="font-size:24px;font-weight:700;color:var(--accent)"></div></div></div>
-    <div id="chart"></div>
-    <div class="legend"><span><i></i>Expected income</span><span><i style="background:#6b6f69;height:0;border-top:2px dashed #6b6f69"></i>Market estimate</span><span><i style="background:#cfe1d6;height:10px"></i>Market range</span></div>
-  </section>
-
-  <section class="card"><div class="eyebrow">Sensitivity check</div><h2>What would change the answer</h2><div id="sens"></div></section>
-
-  <section class="card bound"><div class="boundgrid"><div><div class="eyebrow">A useful boundary</div><h2>What this tool cannot know</h2></div>
-    <ul>
-      <li>What tenants actually pay. Most public rents are asking rents, so they are discounted by an assumed amount.</li>
-      <li>How fast houses lease at each price. The lease-speed assumptions are guesses; public data on this is thin.</li>
-      <li>One house at one moment, with no backtest, so accuracy cannot be measured.</li>
-      <li>The house's condition, the applicant pool, or whether another landlord changes price tomorrow.</li>
-      <li>Market reports mostly describe apartments, so they are not used for the rent level.</li>
-    </ul></div></section>
+      <h3>What would change the answer</h3>
+      <div id="sens"></div>
+      <h3>House record</h3>
+      <div id="record" class="help"></div>
+      <h3>What this tool cannot know</h3>
+      <ul class="cannot">
+        <li>What tenants actually pay. Most public rents are asking rents, so they are discounted by an assumed amount.</li>
+        <li>How fast houses lease at each price. The lease-speed numbers are guesses; public data on this is thin.</li>
+        <li>One house at one moment, with no backtest, so accuracy cannot be measured.</li>
+        <li>The house's condition, the applicant pool, or whether another landlord changes price tomorrow.</li>
+        <li>Market reports mostly describe apartments, so they are not used for the rent level.</li>
+      </ul>
+    </div>
+  </details>
   <p class="foot">Rent Plan gives a decision estimate, not a guarantee. It supports a decision; it does not make it.</p>
 </main>
 
@@ -139,49 +139,50 @@ async function loadHouse(id, firstLoad){
   S.current=d.id; S.property=d.property; S.sourcesStatus=d.sources_status; S.userCount=0;
   S.sources=d.sources.map(s=>({...s, include:s.include!==false}));
   if(firstLoad){ S.assumptions={...d.assumptions}; S.defaults={...d.assumptions}; }
-  $("asof").textContent = d.property.accessed==="today" ? "" : "Data as of "+(d.property.accessed||"");
   renderPicker(); renderProp(); addSourceBox(); renderSliders(); run();
 }
 function renderPicker(){
   const nav=$("houses"); nav.textContent="";
   S.houses.forEach(h=>{ const b=document.createElement("button"); b.type="button"; if(h.id===S.current) b.className="on";
-    b.append(el("b",h.label), el("span", h.custom ? "Enter your own house and sources" : `${h.beds} bd \u00b7 ${h.baths} ba \u00b7 ${Number(h.sqft).toLocaleString()} sqft \u00b7 ask ${h.ask?money(h.ask):"-"}`));
+    b.append(el("b",h.label), el("span", h.custom ? "Enter your own house" : `${h.beds} bd \u00b7 ${h.baths} ba \u00b7 ${Number(h.sqft).toLocaleString()} sqft \u00b7 ask ${h.ask?money(h.ask):"-"}`));
     b.addEventListener("click",()=>{ if(h.id!==S.current) loadHouse(h.id,false); }); nav.append(b); });
 }
 function renderEmpty(msg){
-  $("plan").textContent=""; $("plan").append(el("p",msg,"help")); $("est").textContent=""; $("disagree").textContent=""; $("chart").textContent=""; $("sens").textContent=""; $("bestinc").textContent=""; $("planstamp").textContent="";
+  $("plan").textContent=""; $("plan").append(el("p",msg,"help")); $("est").textContent=""; $("chart").textContent=""; $("sens").textContent=""; $("chartnote").textContent=""; $("planstamp").textContent=""; $("plandetail").textContent=""; $("sources").textContent="";
 }
 function renderBanner(){
-  const b=$("banner"); b.textContent="";
-  const off=S.sources.filter(s=>!s.include).length, msgs=[S.property.status, S.sourcesStatus].filter(m=>/PLACEHOLDER|INCOMPLETE/i.test(m||""));
-  if(off){ const p=el("p"); p.append(el("b","Some sources are off. "), document.createTextNode(off+" nearby or duplicate listing"+(off>1?"s are":" is")+" turned off because size, availability or independence is unclear. Switch them on in the table to see the effect.")); b.append(p); }
-  msgs.forEach(m=>{ const p=el("p"); p.append(el("b","Data status: "), document.createTextNode(m)); b.append(p); });
-  b.hidden=!b.childNodes.length;
+  const b=$("banner"), off=S.sources.filter(s=>!s.include).length;
+  b.textContent = off ? off+" rent"+(off>1?"s are":" is")+" switched off because the size, availability or independence is unclear. Switch "+(off>1?"them":"it")+" on to see the effect." : "";
+  b.hidden=!off;
+  $("status").textContent=[S.property.status, S.sourcesStatus].filter(m=>/PLACEHOLDER|INCOMPLETE/i.test(m||"")).map(m=>"Data status: "+m).join(" ");
 }
 function renderProp(){
   const p=S.property, box=$("prop"); box.textContent="";
-  const head=el("div",null,"head"), t=el("div"); t.append(el("div","Your house","eyebrow"), el("h2","Property details"), el("p","Beds, baths and sqft are used to adjust the comparable rents. Current ask is compared with the plan. Address and date are labels only: nothing is looked up from them.","help"));
-  head.append(t); if(p.facts_source){ const a=el("a","Source for this house \u2197"); a.href=p.facts_source; a.target="_blank"; a.rel="noopener"; head.append(a); } box.append(head);
-  const form=el("div",null,"form wide");
-  [["address","Address","text","label only"],["beds","Beds","number","adjusts comps"],["baths","Baths","number","adjusts comps"],["sqft","Sqft","number","adjusts comps"],["current_asking_rent","Current ask ($/mo)","number","compared with the plan"],["available","Available","text","label only"]].forEach(([k,label,type,hint])=>{
-    const w=el("div"), l=el("label",label), i=document.createElement("input"); i.type=type; if(type==="number"){ i.step="any"; i.min="0"; } i.value=p[k]??"";
-    i.addEventListener("input",()=>{ S.property[k]= type==="number" ? parseFloat(i.value) : i.value; if(type==="number"||k==="address") schedule(); });
-    w.append(l,i,el("div",hint,"help")); form.append(w); });
-  box.append(form, el("p","","help")); box.lastChild.id="propnote";
-  if(p.hud_fmr_3br!==undefined||p.assessed_value!==undefined) box.append(el("p",`County record: ${p.assessed_value? money(p.assessed_value)+" assessed": "not found yet"} \u00b7 parcel ${p.parcel||"not found yet"} \u00b7 HUD fair market rent (3 bed) ${p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"}`,"help"));
-  if(p.note) box.append(el("p",p.note,"help"));
+  const head=el("div",null,"head"), t=el("div");
+  t.append(el("h2",p.address||"My own house"), el("p",[p.current_asking_rent?"Listed at "+money(p.current_asking_rent)+"/mo":"", p.available?"available "+p.available:""].filter(Boolean).join(" \u00b7 "),"help"));
+  head.append(t); if(p.facts_source){ const a=el("a","Listing \u2197"); a.href=p.facts_source; a.target="_blank"; a.rel="noopener"; head.append(a); } box.append(head);
+  const form=el("div",null,"form");
+  [["beds","Beds"],["baths","Baths"],["sqft","Sqft"],["current_asking_rent","Current ask ($/mo)"]].forEach(([k,label])=>{
+    const w=el("div"), l=el("label",label), i=document.createElement("input"); i.type="number"; i.step="any"; i.min="0"; i.value=p[k]??"";
+    i.addEventListener("input",()=>{ S.property[k]=parseFloat(i.value); schedule(); });
+    w.append(l,i); form.append(w); });
+  const pn=el("p","","help"); pn.id="propnote";
+  box.append(form, el("p","Beds, baths and size adjust the nearby rents. Your current ask is only used for comparison.","help"), pn);
+  const rec=$("record"); rec.textContent="";
+  [p.note, `County record: ${p.assessed_value? money(p.assessed_value)+" assessed": "not found yet"} \u00b7 parcel ${p.parcel||"not found yet"} \u00b7 HUD fair market rent (3 bed) ${p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"}`, p.accessed&&p.accessed!=="today"?"Data as of "+p.accessed+". The address and dates are labels; nothing is looked up from them.":""].filter(Boolean).forEach(x=>rec.append(el("p",x,"help")));
 }
 function addSourceBox(){
   const box=$("addsrc"); box.textContent="";
-  const d=el("details",null,"addbox"); d.append(el("summary","+ Add a source (a listing or estimate you found)"));
-  d.append(el("p","Add a rent you found yourself. Asking comps are adjusted for size and layout, so fill in beds, baths and sqft when you know them.","help"));
+  const d=el("details",null,"addbox"); d.append(el("summary","+ Add a rent you found"));
   const form=el("div",null,"form"), f={};
-  [["name","Name or address","text"],["type","Type","select"],["value","Rent ($/mo)","number"],["beds","Beds","number"],["baths","Baths","number"],["sqft","Sqft","number"],["age_days","Age (days)","number"],["distance_mi","Distance (mi)","number"]].forEach(([k,label,type])=>{
-    const w=el("div"), l=el("label",label); let i;
-    if(type==="select"){ i=document.createElement("select"); [["asking_comp","Asking comp"],["leased_comp","Leased comp"],["listing_asking","Listing ask (this house)"],["zillow_estimate","Estimate"]].forEach(([v,t])=>{ const o=el("option",t); o.value=v; i.append(o); }); }
+  const mk=(k,label,type,wrap)=>{ const w=el("div"), l=el("label",label); let i;
+    if(type==="select"){ i=document.createElement("select"); [["asking_comp","Nearby house, asking rent"],["leased_comp","Nearby house, actually leased"],["zillow_estimate","Estimate from a website"],["listing_asking","Listing of this house"]].forEach(([v,t])=>{ const o=el("option",t); o.value=v; i.append(o); }); }
     else { i=document.createElement("input"); i.type=type; if(type==="number"){ i.step="any"; i.min="0"; } }
-    f[k]=i; w.append(l,i); form.append(w); });
-  const msg=el("p","","help"), btn=el("button","Add source","btn primary"); btn.type="button";
+    f[k]=i; w.append(l,i); wrap.append(w); };
+  mk("name","Name or address","text",form); mk("type","What is it","select",form); mk("value","Rent ($/mo)","number",form);
+  const more=el("details"); more.append(el("summary","More details (optional, makes the adjustment better)"));
+  const form2=el("div",null,"form"); [["beds","Beds"],["baths","Baths"],["sqft","Sqft"],["age_days","Days since listed"],["distance_mi","Miles away"]].forEach(([k,l])=>mk(k,l,"number",form2)); more.append(form2);
+  const msg=el("p","","help"), btn=el("button","Add rent","btn primary"); btn.type="button";
   btn.addEventListener("click",()=>{
     const name=f.name.value.trim(), value=parseFloat(f.value.value);
     if(!name){ msg.textContent="Give it a name or address."; return; }
@@ -191,7 +192,7 @@ function addSourceBox(){
       age_days:num("age_days"), distance_mi:num("distance_mi"), include:true, user:true, note:"Added by you."});
     msg.textContent="Added."; Object.values(f).forEach(i=>{ if(i.tagName==="INPUT") i.value=""; }); run();
   });
-  d.append(form, el("div",null,"") ); d.lastChild.append(btn); d.append(msg); box.append(d);
+  d.append(form, more, btn, msg); box.append(d);
 }
 function mkSliders(list, box){
   list.forEach(([k,label,min,max,step,fmt,help])=>{
@@ -213,7 +214,7 @@ function checkHouse(p){
 async function run(){
   const p=S.property, bad=checkHouse(p), mine=++S.seq;
   renderBanner();
-  if(!S.sources.some(x=>x.include)){ $("err").textContent=""; renderSources(null); renderEmpty("Add at least one source under Sources (a listing, an estimate, or a nearby house) to get a plan."); return; }
+  if(!S.sources.some(x=>x.include)){ $("err").textContent=""; renderSources(null); renderEmpty("Add at least one rent you found (a listing, an estimate, or a nearby house) to get a plan."); return; }
   if(bad){ $("err").textContent=bad+" Showing the last good result until this is fixed."; return; }
   $("err").textContent="";
   const ask=Number.isFinite(p.current_asking_rent)&&p.current_asking_rent>0?p.current_asking_rent:null;
@@ -225,61 +226,73 @@ async function run(){
   renderSources(out); renderEst(out); renderPlan(out); renderChart(out); renderSens(out);
 }
 function renderSources(out){
-  const t=$("sources"); t.textContent="";
+  const t=$("sources"); t.textContent=""; const list=$("srclist"); list.textContent="";
   const head=el("tr"); ["On","Source","Type","Raw","Adjusted","Weight"].forEach((h,i)=>head.append(el("th",h,i>=3?"n":"")));
   t.append(head);
-  const byId={}; let tot=0; if(out){ out.sources.forEach(s=>{byId[s.id]=s; tot+=s.weight;}); }
+  const byId={}; let tot=0; if(out){ out.sources.forEach(x=>{byId[x.id]=x; tot+=x.weight;}); }
   S.sources.forEach(s=>{
-    const m=byId[s.id], tr=el("tr",null,s.include?"":"off"), c=el("td"), cb=document.createElement("input"); cb.type="checkbox"; cb.checked=s.include;
+    const m=byId[s.id];
+    const row=el("div",null,"srcrow"+(s.include?"":" off")), cb0=document.createElement("input"); cb0.type="checkbox"; cb0.checked=s.include;
+    cb0.addEventListener("change",()=>{ s.include=cb0.checked; run(); }); row.append(cb0);
+    const nm=el("div",null,"nm"); if(s.url){ const a=el("a",s.name); a.href=s.url; a.target="_blank"; a.rel="noopener"; nm.append(a); } else nm.append(el("b",s.name));
+    nm.append(el("div",TYPES[s.type]||s.type,"ty")); row.append(nm, el("div",money(s.value),"rent"));
+    if(s.user){ const rm=el("button","Remove","linkbtn"); rm.type="button"; rm.addEventListener("click",()=>{ S.sources=S.sources.filter(x=>x!==s); run(); }); row.append(rm); }
+    list.append(row);
+    const tr=el("tr",null,s.include?"":"off"), c=el("td"), cb=document.createElement("input"); cb.type="checkbox"; cb.checked=s.include;
     cb.addEventListener("change",()=>{ s.include=cb.checked; run(); }); c.append(cb); tr.append(c);
     const n=el("td",null,"src"); if(s.url){ const a=el("a",s.name); a.href=s.url; a.target="_blank"; a.rel="noopener"; n.append(a); } else n.append(el("b",s.name));
     if(m&&m.outlier) n.append(document.createTextNode(" "), el("span","Outlier (kept)","pill flag"));
     if(s.note) n.append(el("div",s.note,"help"));
-    if(s.user){ const rm=el("button","Remove","linkbtn"); rm.type="button"; rm.addEventListener("click",()=>{ S.sources=S.sources.filter(x=>x!==s); run(); }); n.append(rm); }
     if(m){ const d=el("details"); d.append(el("summary","how it was adjusted")); const ul=el("ul"); m.adjustments.forEach(x=>ul.append(el("li",x))); d.append(ul); n.append(d); }
-    tr.append(n, el("td",TYPES[s.type]||s.type), el("td",money(s.value),"n"), el("td",m?money(m.adjusted):"—","n"), el("td",m&&tot?Math.round(m.weight/tot*100)+"%":"—","n"));
+    tr.append(n, el("td",TYPES[s.type]||s.type), el("td",money(s.value),"n"), el("td",m?money(m.adjusted):"\u2014","n"), el("td",m&&tot?Math.round(m.weight/tot*100)+"%":"\u2014","n"));
     t.append(tr);
   });
 }
 function renderEst(out){
   const comps=S.sources.filter(x=>x.include&&(x.type==="asking_comp"||x.type==="leased_comp")).length;
-  const pn=$("propnote"); if(pn) pn.textContent = comps ? "" : "No comparable houses are switched on, so beds, baths and sqft cannot change the estimate. Turn on a comp or add one below.";
+  const pn=$("propnote"); if(pn) pn.textContent = comps ? "" : "No nearby houses are switched on, so beds, baths and sqft cannot change the estimate. Turn one on or add one.";
   const pe=$("planstamp"); if(pe) pe.textContent="Updated "+new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"});
-  const m=out.market, d=$("disagree"); d.textContent=""; d.append(el("span","Source disagreement: "+m.disagreement+" ("+(m.spread_pct*100).toFixed(0)+"% spread)","pill "+m.disagreement));
-  const e=$("est"); e.textContent=""; e.append(document.createTextNode("Adjusted market estimate: "), el("b",money(m.estimate)+"/mo"), document.createTextNode(` (range ${money(m.low)} to ${money(m.high)}, ${m.n_sources} sources)`));
-  if(m.hud_note) e.append(el("div",m.hud_note,"help"));
-  if(m.n_sources<3) e.append(el("div","Fewer than 3 sources: the range is widened because the spread is not reliable.","help"));
+  const m=out.market, e=$("est"); e.textContent="";
+  if(m.hud_note) e.append(el("p",m.hud_note,"help"));
+  if(m.n_sources<3) e.append(el("p","Fewer than 3 rents are on, so the range is widened. Add more nearby rents for a firmer answer.","help"));
 }
 function renderPlan(out){
-  const b=$("plan"); b.textContent=""; const p=out.plan, pl=p.plan, s=p.single, m=out.market;
+  const b=$("plan"); b.textContent=""; const p=out.plan, pl=p.plan, m=out.market;
   const big=el("div",null,"bigline"); big.append(document.createTextNode("List at "), el("span",money(pl.start)), document.createTextNode(`. If it has not leased by day ${pl.cut_day}, cut to `), el("span",money(pl.cut_price)), document.createTextNode("."));
   b.append(big);
+  const stats=el("div",null,"stats");
+  const tile=(lab,val,sub)=>{ const d=el("div",null,"stat"); d.append(el("div",lab,"lab")); if(typeof val==="string") d.append(el("div",val,"val")); else d.append(val); if(sub) d.append(el("div",sub,"sub")); stats.append(d); };
+  tile("Market rent", money(m.estimate)+"/mo", `Range ${money(m.low)} to ${money(m.high)}`);
+  tile("Expected income, 12 months", money(pl.income_12m), "After vacancy and leasing fee");
+  const pill=el("span",({low:"Yes, closely",medium:"Somewhat",high:"Not much"})[m.disagreement],"pill "+m.disagreement);
+  const w=el("div",null,"val"); w.append(pill); tile("Do the rents agree?", w, (m.spread_pct*100).toFixed(0)+"% spread, "+m.n_sources+" rents");
+  b.append(stats);
+  const d=$("plandetail"); d.textContent=""; const s=p.single;
   const rows=[["Chance it leases before the cut",(pl.leased_before_cut*100).toFixed(0)+"%"],["Expected days to lease",pl.vacant_days.toFixed(0)+" days"],
     ["Expected 12-month income",money(pl.income_12m)],["Best single price with no cut",money(s.start)],["Gain from a cut rule",signed(p.gain),"gain"]];
   if(p.ask_no_cut) rows.push(["Your current ask with no cut",money(p.ask_no_cut.income_12m)+" income"]);
-  rows.forEach(([k,v,c])=>{ const d=el("div",null,"kv"); d.append(el("span",k),el("b",v,c||"")); b.append(d); });
-  b.append(el("p","Income includes expected vacancy and the leasing fee.","help"));
-  const note = p.gain < 100 ? "The sources agree closely, so there is little to learn from waiting. A cut rule is a cheap safety net here, not a big win."
-    : "The sources disagree enough that waiting teaches you something. If nobody applies by the cut day, the true market is probably at the low end of the range, so the cut protects you.";
-  b.append(el("p",note,"help"));
-  b.append(el("p",`How it works: the true market rent is treated as low (${money(m.low)}, 25%), middle (${money(m.estimate)}, 50%) or high (${money(m.high)}, 25%). Those weights are assumed. Each plan is simulated day by day under each case and the incomes are averaged.`,"help"));
-  if(out.at_edge) b.append(el("p","The best single price is at the edge of the tested range (85% to 110% of market). Treat it with caution.","help"));
+  rows.forEach(([k,v,c])=>{ const r=el("div",null,"kv"); r.append(el("span",k),el("b",v,c||"")); d.append(r); });
+  d.append(el("p","Income includes expected vacancy and the leasing fee.","help"));
+  d.append(el("p", p.gain < 100 ? "The rents agree closely, so there is little to learn from waiting. A cut rule is a cheap safety net here, not a big win."
+    : "The rents disagree enough that waiting teaches you something. If nobody applies by the cut day, the true market is probably at the low end of the range, so the cut protects you.","help"));
+  d.append(el("p",`How it works: the true market rent is treated as low (${money(m.low)}, 25%), middle (${money(m.estimate)}, 50%) or high (${money(m.high)}, 25%). Those weights are assumed. Each plan is simulated day by day under each case and the incomes are averaged.`,"help"));
+  if(out.at_edge) d.append(el("p","The best single price is at the edge of the tested range (85% to 110% of market). Treat it with caution.","help"));
 }
 function renderChart(out){
   const c=out.curve, W=760,H=300,L=64,R=24,T=34,B=44;
   const xs=c.map(p=>p.price), ys=c.map(p=>p.income_12m);
   const x0=Math.min(...xs), x1=Math.max(...xs); let y0=Math.min(...ys), y1=Math.max(...ys); const pad=(y1-y0)*0.12||1; y0-=pad; y1+=pad;
   const X=v=>L+(v-x0)/(x1-x0)*(W-L-R), Y=v=>T+(1-(v-y0)/(y1-y0))*(H-T-B);
-  const m=out.market, best=out.recommendation; $("bestinc").textContent=money(best.income_12m);
+  const m=out.market, best=out.recommendation; $("chartnote").textContent="Best single price with no cut: "+money(best.price)+", about "+money(best.income_12m)+" over 12 months.";
   let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Expected 12-month income by list price">`;
   const bx0=Math.max(X(m.low),L), bx1=Math.min(X(m.high),W-R);
-  if(bx1>bx0) s+=`<rect x="${bx0}" y="${T}" width="${bx1-bx0}" height="${H-T-B}" fill="#2b6a50" opacity="0.10"/>`;
-  for(let i=0;i<=3;i++){ const v=y0+(y1-y0)*i/3, y=Y(v); s+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#e6e3d9"/><text x="${L-8}" y="${y+4}" text-anchor="end">${money(v)}</text>`; }
+  if(bx1>bx0) s+=`<rect x="${bx0}" y="${T}" width="${bx1-bx0}" height="${H-T-B}" fill="#c4560a" opacity="0.10"/>`;
+  for(let i=0;i<=3;i++){ const v=y0+(y1-y0)*i/3, y=Y(v); s+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#ecd9c3"/><text x="${L-8}" y="${y+4}" text-anchor="end">${money(v)}</text>`; }
   for(let i=0;i<=4;i++){ const v=x0+(x1-x0)*i/4; s+=`<text x="${X(v)}" y="${H-B+20}" text-anchor="${i==4?'end':i==0?'start':'middle'}">${money(v)}</text>`; }
-  s+=`<polyline fill="none" stroke="#2b6a50" stroke-width="2.5" stroke-linejoin="round" points="${c.map(p=>X(p.price)+","+Y(p.income_12m)).join(" ")}"/>`;
+  s+=`<polyline fill="none" stroke="#c4560a" stroke-width="2.5" stroke-linejoin="round" points="${c.map(p=>X(p.price)+","+Y(p.income_12m)).join(" ")}"/>`;
   s+=`<line x1="${X(m.estimate)}" x2="${X(m.estimate)}" y1="${T}" y2="${H-B}" stroke="#6b6f69" stroke-dasharray="4 4"/>`;
   const bxp=X(best.price), byp=Y(best.income_12m), lx=Math.min(Math.max(bxp,L+45),W-R-45);
-  s+=`<circle cx="${bxp}" cy="${byp}" r="5" fill="#fff" stroke="#2b6a50" stroke-width="2.5"/><rect x="${lx-45}" y="${byp-30}" width="90" height="22" rx="6" fill="#2b6a50"/><text x="${lx}" y="${byp-15}" text-anchor="middle" style="fill:#fff;font-weight:600">Best ${money(best.price)}</text>`;
+  s+=`<circle cx="${bxp}" cy="${byp}" r="5" fill="#fff" stroke="#c4560a" stroke-width="2.5"/><rect x="${lx-45}" y="${byp-30}" width="90" height="22" rx="6" fill="#c4560a"/><text x="${lx}" y="${byp-15}" text-anchor="middle" style="fill:#fff;font-weight:600">Best ${money(best.price)}</text>`;
   s+=`<text x="${(W-R+L)/2}" y="${H-4}" text-anchor="middle">List price per month</text></svg>`;
   $("chart").innerHTML=s;
 }
