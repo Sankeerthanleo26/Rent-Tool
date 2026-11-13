@@ -43,3 +43,4 @@ Format: what I asked, what the AI proposed, what I decided, why.
 - Address and "available" are no longer input boxes, since they were labels only and made it look as if they changed the numbers. Model and API are unchanged; all 20 tests pass.
 - Follow-up the same day: the user found the first version cramped with unreadable headings. Page widened to 1280px, text sizes raised (labels no longer tiny uppercase), explanatory lines cut, and the house list moved to a fixed left column: "My own house" first, then 18674 E 40th Pl, then any further houses.
 - The user then asked to swap the colours (inputs orange, outputs green) because it looked calmer. Done; the chart is green too.
+- Orange read as a warning to the user, so inputs are now blue and outputs stay green.
