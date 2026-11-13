@@ -1,0 +1,115 @@
+{
+  "id": "e40th-18674",
+  "label": "18674 E 40th Pl",
+  "property": {
+    "status": "INCOMPLETE: live listing confirmed 2026-11-11 on HotPads and Trulia. County record and HUD fair market rent not yet entered.",
+    "address": "18674 E 40th Pl, Denver, CO 80249",
+    "neighborhood": "Gateway - Green Valley Ranch",
+    "beds": 3,
+    "baths": 2,
+    "sqft": 1626,
+    "parcel": null,
+    "assessed_value": null,
+    "assessed_value_note": "TODO: Denver Assessor property search (parcel, assessed value, year built, taxes)",
+    "current_asking_rent": 2800,
+    "note": "Single-family house, available Nov 28, no pets, 2-car attached garage, tenant mows and shovels. Owner/manager not named on the listing. HotPads shows $2,800 base rent; Trulia says $2,800 is the total including required monthly fees, so what the owner nets is unclear.",
+    "facts_source": "https://hotpads.com/18674-e-40th-pl-denver-co-80249-u48qpq/pad",
+    "accessed": "2026-11-11",
+    "hud_fmr_3br": null,
+    "hud_fmr_note": "TODO: look up the current HUD fair market rent for Denver 3 bedrooms and enter it here",
+    "available": "Nov 28"
+  },
+  "sources_status": "INCOMPLETE: 1 reading of the subject listing, 2 platform estimates, 2 nearby asking comps. No leased rents, days-on-market, or county data yet.",
+  "sources": [
+    {
+      "id": "hotpads_subject",
+      "name": "18674 E 40th Pl asking (HotPads, updated hours ago)",
+      "type": "listing_asking",
+      "value": 2800,
+      "age_days": 0,
+      "url": "https://hotpads.com/18674-e-40th-pl-denver-co-80249-u48qpq/pad",
+      "note": "Trulia shows the same 2,800 as 'total price including required monthly fees', so it is the same number, not a second source."
+    },
+    {
+      "id": "hotpads_market",
+      "name": "HotPads neighborhood rate for 3-bed homes (implied)",
+      "type": "zillow_estimate",
+      "value": 2828,
+      "age_days": 0,
+      "url": "https://hotpads.com/18674-e-40th-pl-denver-co-80249-u48qpq/pad",
+      "note": "Derived from the page saying the listing is 28 below market. Not a quote of a stated number."
+    },
+    {
+      "id": "trulia_estimate",
+      "name": "Trulia rent estimate for this house",
+      "type": "zillow_estimate",
+      "value": 2860,
+      "age_days": 0,
+      "url": "https://www.trulia.com/home/18674-e-40th-pl-denver-co-80249-63357827",
+      "note": "Automated estimate, updated Nov 2026. Method not disclosed."
+    },
+    {
+      "id": "malta_4094",
+      "name": "4094 Malta St asking (HotPads, AMH)",
+      "type": "asking_comp",
+      "value": 2820,
+      "beds": 3,
+      "baths": 2.5,
+      "sqft": 1646,
+      "age_days": 0,
+      "url": "https://hotpads.com/4094-malta-st-denver-co-80249-snpdyz/pad",
+      "note": "Same neighborhood, near-identical size. Distance not measured. ForRent shows 2,720 for the same house (next row)."
+    },
+    {
+      "id": "malta_4094_forrent",
+      "name": "4094 Malta St asking (ForRent) - conflicting reading",
+      "type": "asking_comp",
+      "value": 2720,
+      "beds": 3,
+      "baths": 2.5,
+      "sqft": 1646,
+      "age_days": 1,
+      "url": "https://www.forrent.com/co/denver/4094-malta-st/1hn7ed4",
+      "note": "Same house as the row above, 100 lower. Off by default so one house is not counted twice; turn it on to see the effect.",
+      "include": false
+    },
+    {
+      "id": "malta_4124",
+      "name": "4124 Malta St (ForRent, AMH, updated 1 day ago)",
+      "type": "asking_comp",
+      "value": 2810,
+      "beds": 3,
+      "baths": 2.5,
+      "sqft": 1646,
+      "age_days": 1,
+      "url": "https://www.forrent.com/co/denver/4124-malta-st/0hh6th1",
+      "note": "Same size and layout as 4094, same street. Page says showings start soon."
+    },
+    {
+      "id": "e40th_20351",
+      "name": "20351 E 40th Ave (Apartments.com)",
+      "type": "asking_comp",
+      "value": 2300,
+      "beds": 3,
+      "baths": 2.5,
+      "sqft": 1988,
+      "age_days": 0,
+      "url": "https://apartments.com/20351-e-40th-ave-denver-co/jcjnsz7",
+      "note": "Larger house at 2,300, but page says 'check back soon' so it may not be leasable, and the figure may include or exclude fees. Off by default.",
+      "include": false
+    },
+    {
+      "id": "e40th_20000",
+      "name": "20000 E 40th Pl (Apartments.com)",
+      "type": "asking_comp",
+      "value": 2500,
+      "beds": 3,
+      "baths": 2.5,
+      "sqft": 2890,
+      "age_days": 0,
+      "url": "https://www.apartments.com/20000-e-40th-pl-denver-co/4pemf5l/",
+      "note": "Page text says 2,890 sqft; the page title says 1,736 sqft. Sizes conflict and availability is not shown, so it is off by default.",
+      "include": false
+    }
+  ]
+}

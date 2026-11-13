@@ -13,15 +13,15 @@ Live example: 18674 E 40th Pl, Denver, CO 80249 (3 bd / 2 ba / 1,626 sqft, liste
 - The landlord can edit the house (beds, baths, sqft, ask), switch sources on or off, and add his own sources.
 
 ## What it does not do
-- It does not look anything up. The address is a label. Sources are typed into `data/sources.json`
-  (the example house) or added on the page.
+- It does not look anything up. The address is a label. Sources are typed into `data/houses/*.json`
+  (the example houses) or added on the page.
 - It does not know leased rents, days on market, or the house's condition.
 - It has not been checked against real outcomes.
 
 ## Run
     pip install -r requirements.txt
     uvicorn main:app --reload        # open http://localhost:8000
-    pytest -q                        # 15 tests
+    pytest -q                        # 20 tests
 
 ## How the model works (model.py, no randomness, no ML)
 1. `normalize_sources`: asking rents are discounted (3%, assumed); asking comps are adjusted for size,
@@ -45,7 +45,8 @@ Live example: 18674 E 40th Pl, Denver, CO 80249 (3 bd / 2 ba / 1,626 sqft, liste
 
 ## Files
 - `model.py` the model; `main.py` FastAPI app (`/api/defaults`, `/api/recommend`); `static/index.html` the page
-- `data/` example house and sources, each with a URL and access date; `test_model.py` tests
+- `data/houses/*.json` one file per example house (facts + sources, each with a URL and access date); a "My own house" option starts blank
+- `test_model.py` model tests; `test_api.py` checks that every example house loads and produces a plan
 - `docs/ai-log.md` record of AI use, including disagreements and bugs
 
 ## Deploy (one service)

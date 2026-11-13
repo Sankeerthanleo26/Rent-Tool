@@ -56,11 +56,40 @@ class RecommendIn(BaseModel):
     current_ask: Optional[float] = Field(default=None, gt=0)
 
 
+def load_houses() -> dict:
+    """Every file in data/houses/ is one example house with its own sources. 'custom' is a blank house."""
+    houses = {}
+    for f in sorted((ROOT / "data/houses").glob("*.json")):
+        h = json.loads(f.read_text())
+        houses[h["id"]] = h
+    houses["custom"] = {
+        "id": "custom", "label": "My own house",
+        "property": {"address": "My own house", "beds": 3, "baths": 2, "sqft": 1500, "current_asking_rent": None,
+                     "available": "", "facts_source": None, "note": "Enter your house above, then add the rents you found (listings, estimates, nearby houses) under Sources. Nothing is looked up for you.",
+                     "accessed": "today"},
+        "sources_status": "", "sources": []}
+    return houses
+
+
+HOUSES = load_houses()
+
+
+@app.get("/api/houses")
+def houses():
+    out = []
+    for h in HOUSES.values():
+        p = h["property"]
+        out.append({"id": h["id"], "label": h["label"], "beds": p["beds"], "baths": p["baths"], "sqft": p["sqft"],
+                    "ask": p.get("current_asking_rent"), "custom": h["id"] == "custom"})
+    return out
+
+
 @app.get("/api/defaults")
-def defaults():
-    prop = json.loads((ROOT / "data/property.json").read_text())
-    src = json.loads((ROOT / "data/sources.json").read_text())
-    return {"property": prop, "sources": src["sources"], "sources_status": src["status"],
+def defaults(house: Optional[str] = None):
+    h = HOUSES.get(house) if house else next(iter(HOUSES.values()))
+    if h is None:
+        raise HTTPException(404, "Unknown house.")
+    return {"id": h["id"], "property": h["property"], "sources": h["sources"], "sources_status": h["sources_status"],
             "assumptions": asdict(Assumptions())}
 
 

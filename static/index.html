@@ -51,6 +51,8 @@
   .form input,.form select { width:100%; margin-top:4px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; font:inherit; font-size:14px; background:#fff; color:var(--ink); }
   .addbox { border-top:1px solid var(--line); margin-top:16px; padding-top:12px; } .addbox summary { font-weight:600; color:var(--accent); font-size:14px; }
   .btn.primary { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600; } .linkbtn { background:none; border:0; color:var(--bad); font:inherit; font-size:12.5px; cursor:pointer; padding:0; }
+  .picker { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; } .picker button { border:1px solid var(--line); background:var(--card); border-radius:12px; padding:10px 16px; font:inherit; text-align:left; cursor:pointer; }
+  .picker button b { display:block; font-size:14px; } .picker button span { font-size:12.5px; color:var(--muted); } .picker button.on { border-color:var(--accent); background:var(--accentbg); box-shadow:0 0 0 1px var(--accent) inset; }
   .foot { text-align:center; color:var(--muted); font-size:12.5px; margin-top:24px; }
   a { color:var(--accent); } #err { color:var(--bad); } svg text { font:11px Inter,system-ui,sans-serif; fill:var(--muted); }
   .legend { display:flex; gap:20px; justify-content:center; font-size:12.5px; color:var(--muted); margin-top:6px; } .legend i { display:inline-block; width:22px; height:3px; vertical-align:middle; margin-right:6px; background:var(--accent); }
@@ -63,6 +65,7 @@
     <div><h1>Rent Plan</h1><p class="tag">Set a rent you can explain, and know what to do if the market says no.</p></div>
     <div class="asof" id="asof"></div>
   </header>
+  <nav id="houses" class="picker"></nav>
   <div id="banner" class="banner" hidden></div>
   <p id="err"></p>
 
@@ -126,11 +129,27 @@ const signed = v => (v>=0?"+":"−")+money(Math.abs(v));
 function el(tag, text, cls){ const e=document.createElement(tag); if(text!=null) e.textContent=text; if(cls) e.className=cls; return e; }
 
 async function init(){
-  const d = await (await fetch("/api/defaults")).json();
-  S.property=d.property; S.sourcesStatus=d.sources_status; S.sources=d.sources.map(s=>({...s, include:s.include!==false})); S.assumptions={...d.assumptions}; S.defaults={...d.assumptions};
-  $("asof").textContent="Data as of "+(d.property.accessed||"");
+  S.houses=await (await fetch("/api/houses")).json();
   $("reset").addEventListener("click",()=>{ S.assumptions={...S.defaults}; renderSliders(); run(); });
-  renderProp(); addSourceBox(); renderSliders(); run();
+  const first=new URLSearchParams(location.search).get("house");
+  await loadHouse(S.houses.some(h=>h.id===first)?first:S.houses[0].id, true);
+}
+async function loadHouse(id, firstLoad){
+  const d = await (await fetch("/api/defaults?house="+encodeURIComponent(id))).json();
+  S.current=d.id; S.property=d.property; S.sourcesStatus=d.sources_status; S.userCount=0;
+  S.sources=d.sources.map(s=>({...s, include:s.include!==false}));
+  if(firstLoad){ S.assumptions={...d.assumptions}; S.defaults={...d.assumptions}; }
+  $("asof").textContent = d.property.accessed==="today" ? "" : "Data as of "+(d.property.accessed||"");
+  renderPicker(); renderProp(); addSourceBox(); renderSliders(); run();
+}
+function renderPicker(){
+  const nav=$("houses"); nav.textContent="";
+  S.houses.forEach(h=>{ const b=document.createElement("button"); b.type="button"; if(h.id===S.current) b.className="on";
+    b.append(el("b",h.label), el("span", h.custom ? "Enter your own house and sources" : `${h.beds} bd \u00b7 ${h.baths} ba \u00b7 ${Number(h.sqft).toLocaleString()} sqft \u00b7 ask ${h.ask?money(h.ask):"-"}`));
+    b.addEventListener("click",()=>{ if(h.id!==S.current) loadHouse(h.id,false); }); nav.append(b); });
+}
+function renderEmpty(msg){
+  $("plan").textContent=""; $("plan").append(el("p",msg,"help")); $("est").textContent=""; $("disagree").textContent=""; $("chart").textContent=""; $("sens").textContent=""; $("bestinc").textContent=""; $("planstamp").textContent="";
 }
 function renderBanner(){
   const b=$("banner"); b.textContent="";
@@ -142,15 +161,14 @@ function renderBanner(){
 function renderProp(){
   const p=S.property, box=$("prop"); box.textContent="";
   const head=el("div",null,"head"), t=el("div"); t.append(el("div","Your house","eyebrow"), el("h2","Property details"), el("p","Beds, baths and sqft are used to adjust the comparable rents. Current ask is compared with the plan. Address and date are labels only: nothing is looked up from them.","help"));
-  const a=el("a","Source for the example house \u2197"); a.href=p.facts_source; a.target="_blank"; a.rel="noopener";
-  head.append(t,a); box.append(head);
+  head.append(t); if(p.facts_source){ const a=el("a","Source for this house \u2197"); a.href=p.facts_source; a.target="_blank"; a.rel="noopener"; head.append(a); } box.append(head);
   const form=el("div",null,"form wide");
   [["address","Address","text","label only"],["beds","Beds","number","adjusts comps"],["baths","Baths","number","adjusts comps"],["sqft","Sqft","number","adjusts comps"],["current_asking_rent","Current ask ($/mo)","number","compared with the plan"],["available","Available","text","label only"]].forEach(([k,label,type,hint])=>{
     const w=el("div"), l=el("label",label), i=document.createElement("input"); i.type=type; if(type==="number"){ i.step="any"; i.min="0"; } i.value=p[k]??"";
     i.addEventListener("input",()=>{ S.property[k]= type==="number" ? parseFloat(i.value) : i.value; if(type==="number"||k==="address") schedule(); });
     w.append(l,i,el("div",hint,"help")); form.append(w); });
   box.append(form, el("p","","help")); box.lastChild.id="propnote";
-  box.append(el("p",`Example house record: county ${p.assessed_value? money(p.assessed_value)+" assessed": "not found yet"} \u00b7 parcel ${p.parcel||"not found yet"} \u00b7 HUD fair market rent (3 bed) ${p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"}`,"help"));
+  if(p.hud_fmr_3br!==undefined||p.assessed_value!==undefined) box.append(el("p",`County record: ${p.assessed_value? money(p.assessed_value)+" assessed": "not found yet"} \u00b7 parcel ${p.parcel||"not found yet"} \u00b7 HUD fair market rent (3 bed) ${p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"}`,"help"));
   if(p.note) box.append(el("p",p.note,"help"));
 }
 function addSourceBox(){
@@ -195,6 +213,7 @@ function checkHouse(p){
 async function run(){
   const p=S.property, bad=checkHouse(p), mine=++S.seq;
   renderBanner();
+  if(!S.sources.some(x=>x.include)){ $("err").textContent=""; renderSources(null); renderEmpty("Add at least one source under Sources (a listing, an estimate, or a nearby house) to get a plan."); return; }
   if(bad){ $("err").textContent=bad+" Showing the last good result until this is fixed."; return; }
   $("err").textContent="";
   const ask=Number.isFinite(p.current_asking_rent)&&p.current_asking_rent>0?p.current_asking_rent:null;
