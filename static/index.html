@@ -6,8 +6,8 @@
 <title>Rent Plan</title>
 <style>
   :root { --bg:#f6f5f0; --ink:#1c2420; --muted:#6b6f69; --line:#e4e1d6;
-          --in:#2b6a50; --inbg:#f1f8f4; --inline:#c3dacb;
-          --out:#c4560a; --outbg:#fff7ee; --outline:#f1cfa9; --bad:#a3392d; }
+          --in:#c4560a; --inbg:#fff7ee; --inline:#f1cfa9;
+          --out:#2b6a50; --outbg:#f1f8f4; --outline:#c3dacb; --bad:#a3392d; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif; }
   main { max-width:1280px; margin:0 auto; padding:32px 28px 56px; }
@@ -23,7 +23,7 @@
   .zone.out { background:var(--outbg); border-color:var(--outline); border-top:5px solid var(--out); } .zone.out .eyebrow { color:var(--out); }
   .zone.more { background:#fff; padding:0; } .zone.more > summary { cursor:pointer; padding:20px 28px; font-weight:700; font-size:18px; } .zone.more > .inner { padding:0 28px 28px; }
   .picker { display:flex; flex-direction:column; gap:8px; } .picker button { width:100%; border:1px solid var(--inline); background:#fff; border-radius:12px; padding:12px 14px; font:inherit; text-align:left; cursor:pointer; }
-  .picker button b { display:block; font-size:16px; } .picker button span { font-size:14px; color:#555a54; } .picker button.on { border-color:var(--in); background:#e3f1e9; box-shadow:0 0 0 1px var(--in) inset; }
+  .picker button b { display:block; font-size:16px; } .picker button span { font-size:14px; color:#555a54; } .picker button.on { border-color:var(--in); background:#fde8d2; box-shadow:0 0 0 1px var(--in) inset; }
   .form { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); margin-top:16px; }
   .form label { font-size:14px; color:var(--ink); font-weight:600; display:block; }
   .form input,.form select { width:100%; margin-top:4px; padding:10px 12px; border:1px solid var(--inline); border-radius:8px; font:inherit; font-size:16px; background:#fff; color:var(--ink); }
@@ -288,13 +288,13 @@ function renderChart(out){
   const m=out.market, best=out.recommendation; $("chartnote").textContent="Best single price with no cut: "+money(best.price)+", about "+money(best.income_12m)+" over 12 months.";
   let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Expected 12-month income by list price">`;
   const bx0=Math.max(X(m.low),L), bx1=Math.min(X(m.high),W-R);
-  if(bx1>bx0) s+=`<rect x="${bx0}" y="${T}" width="${bx1-bx0}" height="${H-T-B}" fill="#c4560a" opacity="0.10"/>`;
-  for(let i=0;i<=3;i++){ const v=y0+(y1-y0)*i/3, y=Y(v); s+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#ecd9c3"/><text x="${L-8}" y="${y+4}" text-anchor="end">${money(v)}</text>`; }
+  if(bx1>bx0) s+=`<rect x="${bx0}" y="${T}" width="${bx1-bx0}" height="${H-T-B}" fill="#2b6a50" opacity="0.10"/>`;
+  for(let i=0;i<=3;i++){ const v=y0+(y1-y0)*i/3, y=Y(v); s+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#d3e3da"/><text x="${L-8}" y="${y+4}" text-anchor="end">${money(v)}</text>`; }
   for(let i=0;i<=4;i++){ const v=x0+(x1-x0)*i/4; s+=`<text x="${X(v)}" y="${H-B+20}" text-anchor="${i==4?'end':i==0?'start':'middle'}">${money(v)}</text>`; }
-  s+=`<polyline fill="none" stroke="#c4560a" stroke-width="2.5" stroke-linejoin="round" points="${c.map(p=>X(p.price)+","+Y(p.income_12m)).join(" ")}"/>`;
+  s+=`<polyline fill="none" stroke="#2b6a50" stroke-width="2.5" stroke-linejoin="round" points="${c.map(p=>X(p.price)+","+Y(p.income_12m)).join(" ")}"/>`;
   s+=`<line x1="${X(m.estimate)}" x2="${X(m.estimate)}" y1="${T}" y2="${H-B}" stroke="#6b6f69" stroke-dasharray="4 4"/>`;
   const bxp=X(best.price), byp=Y(best.income_12m), lx=Math.min(Math.max(bxp,L+45),W-R-45);
-  s+=`<circle cx="${bxp}" cy="${byp}" r="5" fill="#fff" stroke="#c4560a" stroke-width="2.5"/><rect x="${lx-45}" y="${byp-30}" width="90" height="22" rx="6" fill="#c4560a"/><text x="${lx}" y="${byp-15}" text-anchor="middle" style="fill:#fff;font-weight:600">Best ${money(best.price)}</text>`;
+  s+=`<circle cx="${bxp}" cy="${byp}" r="5" fill="#fff" stroke="#2b6a50" stroke-width="2.5"/><rect x="${lx-45}" y="${byp-30}" width="90" height="22" rx="6" fill="#2b6a50"/><text x="${lx}" y="${byp-15}" text-anchor="middle" style="fill:#fff;font-weight:600">Best ${money(best.price)}</text>`;
   s+=`<text x="${(W-R+L)/2}" y="${H-4}" text-anchor="middle">List price per month</text></svg>`;
   $("chart").innerHTML=s;
 }
