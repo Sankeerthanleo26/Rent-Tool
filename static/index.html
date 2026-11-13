@@ -9,47 +9,50 @@
           --in:#2b6a50; --inbg:#f1f8f4; --inline:#c3dacb;
           --out:#c4560a; --outbg:#fff7ee; --outline:#f1cfa9; --bad:#a3392d; }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif; }
-  main { max-width:860px; margin:0 auto; padding:32px 20px 56px; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif; }
+  main { max-width:1280px; margin:0 auto; padding:32px 28px 56px; }
+  .layout { display:grid; grid-template-columns:260px minmax(0,1fr); gap:28px; align-items:start; } @media (max-width:900px){ .layout{ grid-template-columns:1fr; } }
+  .rail { position:sticky; top:20px; } @media (max-width:900px){ .rail{ position:static; } }
+  .rail .lab { font-weight:700; font-size:15px; margin:0 0 10px; }
   header { margin-bottom:20px; } h1 { font-size:26px; margin:0; letter-spacing:-0.02em; } .tag { color:var(--muted); margin:2px 0 0; }
-  h2 { font-size:22px; margin:2px 0 4px; letter-spacing:-0.01em; } h3 { font-size:15px; margin:26px 0 6px; }
-  .eyebrow { font-size:12px; letter-spacing:.09em; text-transform:uppercase; font-weight:700; }
-  .help { color:var(--muted); font-size:13px; margin:4px 0 0; } .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
-  .zone { border-radius:16px; padding:24px; margin-bottom:20px; border:1px solid var(--line); }
+  h2 { font-size:24px; margin:2px 0 4px; letter-spacing:-0.01em; } h3 { font-size:18px; margin:30px 0 8px; }
+  .eyebrow { font-size:16px; font-weight:700; }
+  .help { color:#555a54; font-size:14px; margin:4px 0 0; } .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  .zone { border-radius:16px; padding:28px; margin-bottom:20px; border:1px solid var(--line); }
   .zone.in { background:var(--inbg); border-color:var(--inline); border-top:5px solid var(--in); } .zone.in .eyebrow { color:var(--in); }
   .zone.out { background:var(--outbg); border-color:var(--outline); border-top:5px solid var(--out); } .zone.out .eyebrow { color:var(--out); }
-  .zone.more { background:#fff; padding:0; } .zone.more > summary { cursor:pointer; padding:18px 24px; font-weight:700; font-size:16px; } .zone.more > .inner { padding:0 24px 24px; }
-  .picker { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 4px; } .picker button { border:1px solid var(--inline); background:#fff; border-radius:10px; padding:8px 14px; font:inherit; text-align:left; cursor:pointer; }
-  .picker button b { display:block; font-size:14px; } .picker button span { font-size:12px; color:var(--muted); } .picker button.on { border-color:var(--in); background:#e3f1e9; box-shadow:0 0 0 1px var(--in) inset; }
+  .zone.more { background:#fff; padding:0; } .zone.more > summary { cursor:pointer; padding:20px 28px; font-weight:700; font-size:18px; } .zone.more > .inner { padding:0 28px 28px; }
+  .picker { display:flex; flex-direction:column; gap:8px; } .picker button { width:100%; border:1px solid var(--inline); background:#fff; border-radius:12px; padding:12px 14px; font:inherit; text-align:left; cursor:pointer; }
+  .picker button b { display:block; font-size:16px; } .picker button span { font-size:14px; color:#555a54; } .picker button.on { border-color:var(--in); background:#e3f1e9; box-shadow:0 0 0 1px var(--in) inset; }
   .form { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); margin-top:16px; }
-  .form label { font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); font-weight:600; display:block; }
-  .form input,.form select { width:100%; margin-top:4px; padding:9px 10px; border:1px solid var(--inline); border-radius:8px; font:inherit; font-size:15px; background:#fff; color:var(--ink); }
+  .form label { font-size:14px; color:var(--ink); font-weight:600; display:block; }
+  .form input,.form select { width:100%; margin-top:4px; padding:10px 12px; border:1px solid var(--inline); border-radius:8px; font:inherit; font-size:16px; background:#fff; color:var(--ink); }
   .form input:focus,.form select:focus { outline:2px solid var(--in); outline-offset:0; }
-  .subhead { font-weight:700; margin:22px 0 6px; font-size:14px; }
-  .srcrow { display:flex; align-items:center; gap:12px; padding:10px 12px; background:#fff; border:1px solid var(--inline); border-radius:10px; margin-bottom:6px; }
-  .srcrow.off { opacity:.55; } .srcrow .nm { flex:1; min-width:0; } .srcrow .nm a,.srcrow .nm b { color:var(--ink); font-weight:600; text-decoration:none; } .srcrow .ty { font-size:12px; color:var(--muted); } .srcrow .rent { font-weight:700; font-variant-numeric:tabular-nums; }
+  .subhead { font-weight:700; margin:26px 0 8px; font-size:18px; }
+  .srcrow { display:flex; align-items:center; gap:12px; padding:12px 14px; background:#fff; border:1px solid var(--inline); border-radius:10px; margin-bottom:8px; font-size:16px; }
+  .srcrow.off { opacity:.55; } .srcrow .nm { flex:1; min-width:0; } .srcrow .nm a,.srcrow .nm b { color:var(--ink); font-weight:600; text-decoration:none; } .srcrow .ty { font-size:14px; color:#555a54; } .srcrow .rent { font-weight:700; font-variant-numeric:tabular-nums; }
   input[type=checkbox] { width:18px; height:18px; accent-color:var(--in); }
-  .addbox { margin-top:12px; } .addbox > summary { cursor:pointer; font-weight:600; color:var(--in); font-size:14px; } .addbox details summary { cursor:pointer; color:var(--muted); font-size:13px; margin-top:10px; }
+  .addbox { margin-top:12px; } .addbox > summary { cursor:pointer; font-weight:600; color:var(--in); font-size:16px; } .addbox details summary { cursor:pointer; color:#555a54; font-size:14px; margin-top:10px; }
   .btn { border:1px solid var(--line); background:#fff; border-radius:8px; padding:5px 12px; font:inherit; font-size:13px; cursor:pointer; }
   .btn.primary { background:var(--in); color:#fff; border-color:var(--in); font-weight:600; margin-top:12px; } .linkbtn { background:none; border:0; color:var(--bad); font:inherit; font-size:12.5px; cursor:pointer; padding:0; }
-  .bigline { font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-0.02em; margin:14px 0 18px; } .bigline span { color:var(--out); }
+  .bigline { font-size:38px; line-height:1.2; font-weight:700; letter-spacing:-0.02em; margin:14px 0 18px; } .bigline span { color:var(--out); }
   .stats { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); }
-  .stat { background:#fff; border:1px solid var(--outline); border-radius:12px; padding:12px 14px; } .stat .lab { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; } .stat .val { font-size:20px; font-weight:700; margin-top:2px; } .stat .sub { font-size:12.5px; color:var(--muted); }
-  .pill { display:inline-block; padding:2px 10px; border-radius:99px; font-size:12px; font-weight:600; background:#eee; }
+  .stat { background:#fff; border:1px solid var(--outline); border-radius:12px; padding:16px 18px; } .stat .lab { font-size:14px; color:#555a54; font-weight:600; } .stat .val { font-size:24px; font-weight:700; margin-top:2px; } .stat .sub { font-size:14px; color:#555a54; }
+  .pill { display:inline-block; padding:2px 12px; border-radius:99px; font-size:14px; font-weight:600; background:#eee; }
   .pill.low { background:#ece9de; color:#4b4f49; } .pill.medium,.pill.flag { background:#fbe9c9; color:#7a5212; } .pill.high { background:#fbe8e5; color:var(--bad); }
-  .legend { display:flex; gap:20px; justify-content:center; font-size:12.5px; color:var(--muted); margin-top:6px; flex-wrap:wrap; } .legend i { display:inline-block; width:22px; height:3px; vertical-align:middle; margin-right:6px; background:var(--out); }
+  .legend { display:flex; gap:20px; justify-content:center; font-size:14px; color:#555a54; margin-top:6px; flex-wrap:wrap; } .legend i { display:inline-block; width:22px; height:3px; vertical-align:middle; margin-right:6px; background:var(--out); }
   .kv { display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-top:1px solid var(--line); } .kv span { color:var(--muted); } .kv b { font-variant-numeric:tabular-nums; } .kv b.gain { color:var(--out); }
-  table { width:100%; border-collapse:collapse; font-size:14px; } .tablebox { border:1px solid var(--line); border-radius:12px; overflow-x:auto; margin-top:10px; }
-  th,td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; } tr:last-child td { border-bottom:0; }
-  th { font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); background:#f9f8f3; } td.n,th.n { text-align:right; font-variant-numeric:tabular-nums; }
+  table { width:100%; border-collapse:collapse; font-size:15px; } .tablebox { border:1px solid var(--line); border-radius:12px; overflow-x:auto; margin-top:10px; }
+  th,td { text-align:left; padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top; } tr:last-child td { border-bottom:0; }
+  th { font-size:14px; font-weight:700; color:var(--ink); background:#f3f1e8; } td.n,th.n { text-align:right; font-variant-numeric:tabular-nums; }
   tr.off td { color:#9a9d97; } td.src a { color:var(--ink); font-weight:600; text-decoration:none; }
-  details { color:var(--muted); font-size:12.5px; } summary { cursor:pointer; } ul { margin:6px 0 0 18px; padding:0; } li { margin-bottom:4px; }
-  .slider { padding:12px 0; border-top:1px solid var(--line); } .slider label { display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:14px; }
+  details { color:#555a54; font-size:14px; } summary { cursor:pointer; } ul { margin:6px 0 0 18px; padding:0; } li { margin-bottom:4px; }
+  .slider { padding:12px 0; border-top:1px solid var(--line); } .slider label { display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:16px; }
   .slider .v { border:1px solid var(--line); border-radius:8px; padding:2px 10px; font-weight:600; font-size:13px; background:#fff; } .slider input { width:100%; accent-color:var(--in); margin:8px 0 2px; }
-  .rowline { display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-top:1px solid var(--line); align-items:center; } .rowline .t { font-weight:600; } .rowline .d { font-size:13px; color:var(--muted); }
+  .rowline { display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-top:1px solid var(--line); align-items:center; } .rowline .t { font-weight:600; } .rowline .d { font-size:14px; color:#555a54; }
   .delta.up { color:var(--out); font-weight:700; } .delta.down { color:var(--bad); font-weight:700; } .right { text-align:right; min-width:110px; font-variant-numeric:tabular-nums; }
-  .cannot { list-style:none; margin:6px 0 0; padding:0; font-size:14px; color:var(--ink); } .cannot li { margin-bottom:8px; }
-  .foot { text-align:center; color:var(--muted); font-size:12.5px; margin-top:24px; } a { color:var(--in); } #err { color:var(--bad); } svg text { font:11px Inter,system-ui,sans-serif; fill:var(--muted); }
+  .cannot { list-style:none; margin:6px 0 0; padding:0; font-size:16px; color:var(--ink); } .cannot li { margin-bottom:8px; }
+  .foot { text-align:center; color:var(--muted); font-size:12.5px; margin-top:24px; } a { color:var(--in); } #err { color:var(--bad); } svg text { font:13px Inter,system-ui,sans-serif; fill:var(--muted); }
 </style>
 </head>
 <body>
@@ -57,12 +60,13 @@
   <header><h1>Rent Plan</h1><p class="tag">What should I list my rent at, and when should I cut it?</p></header>
   <p id="err"></p>
 
+  <div class="layout">
+  <aside class="rail"><p class="lab">Houses</p><nav id="houses" class="picker"></nav></aside>
+  <div class="content">
   <section class="zone in">
-    <div class="eyebrow">1 &middot; Your house and the rents you found</div>
-    <nav id="houses" class="picker"></nav>
+    <div class="eyebrow">1 &middot; Your house</div>
     <div id="prop"></div>
     <div class="subhead">Rents you found nearby</div>
-    <p class="help">Switch a rent off to see how much the plan depends on it.</p>
     <div id="srclist"></div>
     <div id="addsrc"></div>
     <p class="help" id="banner" hidden></p>
@@ -71,8 +75,7 @@
   <section class="zone out">
     <div class="head"><div class="eyebrow">2 &middot; Your plan</div><div class="help" id="planstamp"></div></div>
     <div id="plan"></div>
-    <div class="subhead" style="margin-top:24px">Expected income by list price</div>
-    <p class="help">Higher rent helps until a longer vacancy costs more. This chart is for one price with no cut.</p>
+    <div class="subhead" style="margin-top:28px">Expected income by list price (one price, no cut)</div>
     <div id="chart"></div>
     <div class="legend"><span><i></i>Expected income</span><span><i style="height:0;background:none;border-top:2px dashed #6b6f69"></i>Market estimate</span><span><i style="height:10px;opacity:.25"></i>Market range</span></div>
     <p class="help" id="chartnote" style="text-align:center"></p>
@@ -84,12 +87,10 @@
     <div class="inner">
       <p class="help" id="status"></p>
       <h3>Sources and how each was adjusted</h3>
-      <p class="help">Each rent is adjusted for size and timing, then weighted. The weighted middle is the market estimate.</p>
       <div class="tablebox"><table id="sources"></table></div>
       <h3>The plan in numbers</h3>
       <div id="plandetail"></div>
       <div class="head"><h3>Assumptions</h3><button class="btn" id="reset" style="margin-top:20px">Reset</button></div>
-      <p class="help">These are guesses, not facts. Move one to see how the answer changes.</p>
       <div id="sliders"></div>
       <details><summary>More adjustments</summary><div id="sliders2"></div></details>
       <h3>What would change the answer</h3>
@@ -106,6 +107,7 @@
       </ul>
     </div>
   </details>
+  </div></div>
   <p class="foot">Rent Plan gives a decision estimate, not a guarantee. It supports a decision; it does not make it.</p>
 </main>
 
@@ -143,8 +145,8 @@ async function loadHouse(id, firstLoad){
 }
 function renderPicker(){
   const nav=$("houses"); nav.textContent="";
-  S.houses.forEach(h=>{ const b=document.createElement("button"); b.type="button"; if(h.id===S.current) b.className="on";
-    b.append(el("b",h.label), el("span", h.custom ? "Enter your own house" : `${h.beds} bd \u00b7 ${h.baths} ba \u00b7 ${Number(h.sqft).toLocaleString()} sqft \u00b7 ask ${h.ask?money(h.ask):"-"}`));
+  [...S.houses].sort((a,b)=>(b.custom?1:0)-(a.custom?1:0)).forEach(h=>{ const b=document.createElement("button"); b.type="button"; if(h.id===S.current) b.className="on";
+    b.append(el("b",h.label), el("span", h.custom ? "Enter your own" : `${h.beds} bd \u00b7 ${h.baths} ba \u00b7 ${Number(h.sqft).toLocaleString()} sqft \u00b7 ask ${h.ask?money(h.ask):"-"}`));
     b.addEventListener("click",()=>{ if(h.id!==S.current) loadHouse(h.id,false); }); nav.append(b); });
 }
 function renderEmpty(msg){
@@ -167,7 +169,7 @@ function renderProp(){
     i.addEventListener("input",()=>{ S.property[k]=parseFloat(i.value); schedule(); });
     w.append(l,i); form.append(w); });
   const pn=el("p","","help"); pn.id="propnote";
-  box.append(form, el("p","Beds, baths and size adjust the nearby rents. Your current ask is only used for comparison.","help"), pn);
+  box.append(form, pn);
   const rec=$("record"); rec.textContent="";
   [p.note, `County record: ${p.assessed_value? money(p.assessed_value)+" assessed": "not found yet"} \u00b7 parcel ${p.parcel||"not found yet"} \u00b7 HUD fair market rent (3 bed) ${p.hud_fmr_3br? money(p.hud_fmr_3br): "not entered yet"}`, p.accessed&&p.accessed!=="today"?"Data as of "+p.accessed+". The address and dates are labels; nothing is looked up from them.":""].filter(Boolean).forEach(x=>rec.append(el("p",x,"help")));
 }
