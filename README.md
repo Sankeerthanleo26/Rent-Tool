@@ -21,7 +21,7 @@ Live example: 18674 E 40th Pl, Denver, CO 80249 (3 bd / 2 ba / 1,626 sqft, liste
 ## Run
     pip install -r requirements.txt
     uvicorn main:app --reload        # open http://localhost:8000
-    pytest -q                        # 20 tests
+    pytest -q                        # 25 tests
 
 ## How the model works (model.py, no randomness, no ML)
 1. `normalize_sources`: asking rents are discounted (3%, assumed); asking comps are adjusted for size,
@@ -36,6 +36,23 @@ Live example: 18674 E 40th Pl, Denver, CO 80249 (3 bd / 2 ba / 1,626 sqft, liste
    a low / middle / high market (25% / 50% / 25%, assumed), and compares it with the best single price.
 5. `recommend` runs the steps above and six sensitivity checks.
 
+## Tech stack
+| Piece | Why |
+|---|---|
+| Python | The model is plain functions with no randomness, so every number can be checked by hand. |
+| FastAPI | One small service that serves the page and runs the model; automatic `/docs` page for trying the API. |
+| Pydantic v2 | Checks every request (types, ranges, allowed source types) before the model runs. It validates shape, not truth. |
+| HTML, CSS and JavaScript (no framework) | One page, no build step to learn or debug. |
+| JSON files in `data/houses/` | One house, so no database. Every source carries a URL and access date, so each number can be audited. |
+| pytest and GitHub Actions | 25 tests (hand-computed cases, edge cases, API validation) run on every push. |
+| Render (free tier) | Public URL for the deployed tool. |
+
+Left out on purpose: database, cache, accounts, an LLM, a frontend framework. One user and one house do not need them.
+
+## Documents
+- `docs/summary.md` one-page summary: the decision, how conflicting sources were handled, what could not be obtained.
+- `docs/ai-log.md` record of AI use, including disagreements and bugs.
+
 ## Known limits
 - Base lease rate, price sensitivity, the 3% discount, the source weights and the 25/50/25 market cases
   are assumptions, not fitted to data. Public data on days-to-lease for houses is thin.
@@ -47,7 +64,6 @@ Live example: 18674 E 40th Pl, Denver, CO 80249 (3 bd / 2 ba / 1,626 sqft, liste
 - `model.py` the model; `main.py` FastAPI app (`/api/defaults`, `/api/recommend`); `static/index.html` the page
 - `data/houses/*.json` one file per example house (facts + sources, each with a URL and access date); a "My own house" option starts blank
 - `test_model.py` model tests; `test_api.py` checks that every example house loads and produces a plan
-- `docs/ai-log.md` record of AI use, including disagreements and bugs
 
 ## Deploy (one service)
 Build: `pip install -r requirements.txt`   Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`

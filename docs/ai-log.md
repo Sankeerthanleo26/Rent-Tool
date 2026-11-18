@@ -44,3 +44,10 @@ Format: what I asked, what the AI proposed, what I decided, why.
 - Follow-up the same day: the user found the first version cramped with unreadable headings. Page widened to 1280px, text sizes raised (labels no longer tiny uppercase), explanatory lines cut, and the house list moved to a fixed left column: "My own house" first, then 18674 E 40th Pl, then any further houses.
 - The user then asked to swap the colours (inputs orange, outputs green) because it looked calmer. Done; the chart is green too.
 - Orange read as a warning to the user, so inputs are now blue and outputs stay green.
+
+## Review of the finished repo (2026-11-14 to 2026-11-17)
+- **Prep notes versus the code.** The AI's prep document described a design (single endpoint, `data/property.json`, no price-cut plan, 5% base rate) that no longer matched the repo (three endpoints, `data/houses/*.json`, a price-cut plan, 4% base rate). Found when the AI read the actual code. Fix: the prep document was updated to match the code, and the repo is the source of truth.
+- **An invented example.** While drafting the prep document the AI wrote a nearby comp address that it had not confirmed. It was removed. Rule kept: only sources opened and checked on the live page go in the data file.
+- **Legal check.** The AI summarised the regulatory attention on algorithmic rent-setting (shared nonpublic data across competing landlords). The tool uses public data for one landlord and only advises; scaling it by pooling users' leases is where the risk would start.
+- **Repo review findings (AI), accepted:** add validation tests, CI, version bounds, a tech-stack section and the summary. **Raised, model not changed yet (my call):** the derived "HotPads market" source carries the same weight as Trulia's estimate, and the two Malta St comps are one landlord on one street.
+- TODO (me): add the points where I disagreed with the AI and why, in my own words. Export the full chats as a backup.

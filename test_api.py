@@ -48,3 +48,33 @@ def test_custom_house_works_once_a_source_is_added():
     b = body_for("custom")
     b["sources"] = [{"id": "u1", "name": "my comp", "type": "leased_comp", "value": 2400, "beds": 3, "baths": 2, "sqft": 1500, "age_days": 10}]
     assert client.post("/api/recommend", json=b).status_code == 200
+
+
+# ---- input validation (Pydantic) ----
+
+def _valid_body():
+    return body_for("e40th-18674")
+
+
+def test_bad_source_type_is_rejected():
+    b = _valid_body()
+    b["sources"][0]["type"] = "made_up"
+    assert client.post("/api/recommend", json=b).status_code == 422
+
+
+def test_non_positive_rent_is_rejected():
+    b = _valid_body()
+    b["sources"][0]["value"] = 0
+    assert client.post("/api/recommend", json=b).status_code == 422
+
+
+def test_out_of_range_assumption_is_rejected():
+    b = _valid_body()
+    b["assumptions"]["base_lease_rate"] = 5          # a daily chance above 100%
+    assert client.post("/api/recommend", json=b).status_code == 422
+
+
+def test_missing_house_facts_are_rejected():
+    b = _valid_body()
+    del b["subject"]["sqft"]
+    assert client.post("/api/recommend", json=b).status_code == 422

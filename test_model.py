@@ -123,3 +123,14 @@ def test_best_plan_is_at_least_as_good_as_best_single_price():
     r = best_plan({"estimate": 2716, "low": 2612, "high": 2820}, Assumptions())
     assert r["plan"]["income_12m"] >= r["single"]["income_12m"] - 1e-6
     assert r["plan"]["cut_price"] < r["plan"]["start"]
+
+
+# ---- HUD sanity check ----
+
+def test_hud_check_flags_an_estimate_far_from_fair_market_rent():
+    items = normalize_sources([comp("a", 3000)], SUBJ, A)
+    far = reconcile(items, A, hud_fmr=1500)       # estimate is about 1.9x HUD
+    near = reconcile(normalize_sources([comp("a", 3000)], SUBJ, A), A, hud_fmr=2500)
+    assert "far from" in far["hud_note"]
+    assert "plausible" in near["hud_note"]
+    assert "hud_ratio" not in reconcile(normalize_sources([comp("a", 3000)], SUBJ, A), A)
