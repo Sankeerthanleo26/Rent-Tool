@@ -8,6 +8,7 @@ A landlord with one house has no portfolio to absorb an empty month. Priced too 
 
 ## What the tool says (default assumptions)
 - Market estimate: **$2,716 a month, range $2,612 to $2,820**, from five sources that agree closely (spread about 7%).
+- HUD cross-check: the FY2027 fair market rent for a 3-bedroom in the Denver metro is $2,846; the estimate is about 95% of it, inside the plausible band. HUD's figure is a voucher benchmark that includes utilities, so it is a sanity check only, not a source of the rent.
 - Best single list price: about **$2,743**, against the current $2,800 ask.
 - Best price-cut plan: start near $2,770 and cut about 4% (to about $2,660) on day 45. It beats the best single price by only about **$20 a year**, so for this house a single price is nearly as good. I report that instead of hiding it.
 
@@ -24,7 +25,7 @@ A landlord with one house has no portfolio to absorb an empty month. Priced too 
 - Leased (achieved) rents, days on market and price histories for houses; only asking rents are public.
 - The house's condition, the landlord's real costs, and demand in a given week.
 - Distance from each comp (not measured, so comps get a default similarity).
-- The Denver Assessor record and the HUD fair market rent are not entered yet, so the HUD cross-check does not run.
+- The Denver Assessor record is not entered yet, so the tool cannot check the listing's square footage, beds and baths against the county.
 
 ## Limits
 The base lease rate, price sensitivity, the 3% discount, the source weights and the 25/50/25 market cases are assumptions, not fitted to data. It is one house at one moment, with no backtest, so accuracy cannot be measured. Market reports mostly describe apartments, so they are not used for the rent level. The tool recommends a number; the landlord decides.

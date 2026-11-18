@@ -78,3 +78,15 @@ def test_missing_house_facts_are_rejected():
     b = _valid_body()
     del b["subject"]["sqft"]
     assert client.post("/api/recommend", json=b).status_code == 422
+
+
+def test_hud_check_runs_for_default_house():
+    import main
+    h = main.HOUSES["e40th-18674"]
+    p = h["property"]
+    assert p["hud_fmr_3br"] == 2846
+    body = {"subject": {"beds": p["beds"], "baths": p["baths"], "sqft": p["sqft"]},
+            "sources": h["sources"], "hud_fmr": p["hud_fmr_3br"], "current_ask": 2800}
+    m = client.post("/api/recommend", json=body).json()["market"]
+    assert 0.8 <= m["hud_ratio"] <= 1.4
+    assert "plausible band" in m["hud_note"]

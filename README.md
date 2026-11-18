@@ -21,7 +21,7 @@ Live example: 18674 E 40th Pl, Denver, CO 80249 (3 bd / 2 ba / 1,626 sqft, liste
 ## Run
     pip install -r requirements.txt
     uvicorn main:app --reload        # open http://localhost:8000
-    pytest -q                        # 25 tests
+    pytest -q                        # 26 tests
 
 ## How the model works (model.py, no randomness, no ML)
 1. `normalize_sources`: asking rents are discounted (3%, assumed); asking comps are adjusted for size,
@@ -44,7 +44,7 @@ Live example: 18674 E 40th Pl, Denver, CO 80249 (3 bd / 2 ba / 1,626 sqft, liste
 | Pydantic v2 | Checks every request (types, ranges, allowed source types) before the model runs. It validates shape, not truth. |
 | HTML, CSS and JavaScript (no framework) | One page, no build step to learn or debug. |
 | JSON files in `data/houses/` | One house, so no database. Every source carries a URL and access date, so each number can be audited. |
-| pytest and GitHub Actions | 25 tests (hand-computed cases, edge cases, API validation) run on every push. |
+| pytest and GitHub Actions | 26 tests (hand-computed cases, edge cases, API validation) run on every push. |
 | Render (free tier) | Public URL for the deployed tool. |
 
 Left out on purpose: database, cache, accounts, an LLM, a frontend framework. One user and one house do not need them.

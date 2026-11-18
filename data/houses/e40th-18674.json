@@ -2,7 +2,7 @@
   "id": "e40th-18674",
   "label": "18674 E 40th Pl",
   "property": {
-    "status": "INCOMPLETE: live listing confirmed 2026-11-11 on HotPads and Trulia. County record and HUD fair market rent not yet entered.",
+    "status": "INCOMPLETE: live listing confirmed 2026-11-11 on HotPads and Trulia. HUD fair market rent entered 2026-11-18. County record not yet entered.",
     "address": "18674 E 40th Pl, Denver, CO 80249",
     "neighborhood": "Gateway - Green Valley Ranch",
     "beds": 3,
@@ -15,8 +15,8 @@
     "note": "Single-family house, available Nov 28, no pets, 2-car attached garage, tenant mows and shovels. Owner/manager not named on the listing. HotPads shows $2,800 base rent; Trulia says $2,800 is the total including required monthly fees, so what the owner nets is unclear.",
     "facts_source": "https://hotpads.com/18674-e-40th-pl-denver-co-80249-u48qpq/pad",
     "accessed": "2026-11-11",
-    "hud_fmr_3br": null,
-    "hud_fmr_note": "TODO: look up the current HUD fair market rent for Denver 3 bedrooms and enter it here",
+    "hud_fmr_3br": 2846,
+    "hud_fmr_note": "HUD FY2027 (effective 2026-10-01) fair market rent, 3 bedrooms, Denver-Aurora-Centennial CO metro area: $2,846. Source: huduser.gov FY2027 FMR schedule. A metro-wide benchmark including utilities, used only as a sanity check, not as a rent source.",
     "available": "Nov 28"
   },
   "sources_status": "INCOMPLETE: 1 reading of the subject listing, 2 platform estimates, 2 nearby asking comps. No leased rents, days-on-market, or county data yet.",
