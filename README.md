@@ -50,7 +50,7 @@ Live example: 18674 E 40th Pl, Denver, CO 80249 (3 bd / 2 ba / 1,626 sqft, liste
 Left out on purpose: database, cache, accounts, an LLM, a frontend framework. One user and one house do not need them.
 
 ## Documents
-- `docs/summary.md` one-page summary: the decision, how conflicting sources were handled, what could not be obtained.
+- One-page written summary: submitted as a separate document (link to be added).
 - `docs/ai-log.md` record of AI use, including disagreements and bugs.
 
 ## Known limits
@@ -58,7 +58,7 @@ Left out on purpose: database, cache, accounts, an LLM, a frontend framework. On
   are assumptions, not fitted to data. Public data on days-to-lease for houses is thin.
 - One house, one snapshot, no backtest, so accuracy cannot be measured.
 - Market reports mostly describe apartments, so they are not used for the rent level.
-- The county record and HUD fair market rent are not entered yet.
+- The Denver Assessor (county) record is not entered yet. HUD fair market rent is entered and used as a sanity check.
 
 ## Files
 - `model.py` the model; `main.py` FastAPI app (`/api/defaults`, `/api/recommend`); `static/index.html` the page
