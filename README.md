@@ -50,7 +50,7 @@ Live example: 18674 E 40th Pl, Denver, CO 80249 (3 bd / 2 ba / 1,626 sqft, liste
 Left out on purpose: database, cache, accounts, an LLM, a frontend framework. One user and one house do not need them.
 
 ## Documents
-- One-page written summary: submitted as a separate document (link to be added).
+- `docs/Rent-Tool-Summary.pdf` one-page written summary: the decision and reasoning, how conflicting sources were handled, what could not be obtained.
 - `docs/ai-log.md` record of AI use, including disagreements and bugs.
 
 ## Known limits
