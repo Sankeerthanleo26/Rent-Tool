@@ -53,7 +53,7 @@ Left out on purpose: database, cache, accounts, an LLM, a frontend framework. On
 
 ## Documents
 - `docs/Rent-Tool-Summary.pdf` one-page written summary: the decision and reasoning, how conflicting sources were handled, what could not be obtained.
-- `docs/ai-log.md` record of AI use, including disagreements and bugs.
+- `docs/AI-Usage-Summary.pdf` record of how AI was used, where I disagreed with it, and how I checked its work.
 
 ## Known limits
 - Base lease rate, price sensitivity, the 3% discount, the source weights and the 25/50/25 market cases
