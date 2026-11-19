@@ -1,5 +1,7 @@
 # Rent Plan
 
+**Live site:** https://rent-tool.onrender.com (free tier, so the first load after a quiet period can take about a minute)
+
 A small web tool that helps one landlord make one decision about one house: **what to list the rent at,
 and what to do if it does not lease** ("list at $X; if not leased by day N, cut to $Y").
 
